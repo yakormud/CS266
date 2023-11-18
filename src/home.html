@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+        <link rel="stylesheet" href="homestyle.css" />
+
+         <!----===== Boxicons CSS ===== -->
+         <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+
+        <!----===== Iconscout CSS ===== -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" /> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>  
+    <script src="addDate.js"></script> 
+    
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        
+         <title>Expense Tracker</title>
+         <style>
+            /* Custom styles for the calendar */
+            #custom-calendar {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 5px;
+              padding: 10px;
+            }
+        
+            #custom-calendar button {
+              padding: 5px 10px;
+              cursor: pointer;
+              border: 1px solid #ccc;
+              background-color: #fff;
+              text-align: center;
+            }
+          </style>
+      </head>
+     <body>
+        <div class="container">
+            <div class="container-sidebar">
+                <nav class="sidebar close">
+                <header>
+                    <div class="image-text">
+                        <span class="image">
+                            <img src="logo_cs266.png" alt="">
+                        </span>
+                        <div class="text logo-text">
+                            <span class="name">Expense Tracker</span>
+                            <span class="profession">CS266</span>
+                        </div>
+                    </div>
+                    <i class='bx bx-chevron-right toggle'></i>
+                </header>
+                
+                <div class="menu-bar">
+                    <div class="menu">
+                        <ul class="menu-links">
+                            <li class="nav-link">
+                                <a href="#">
+                                    <i class='bx bx-home-alt icon' ></i>
+                                    <span class="text nav-text">HOME</span>
+                                </a>
+                            </li>
+                            
+                            <li class="nav-link">
+                                <a href="#">
+                                    <i class='bx bx-history icon'></i>
+                                    <span class="text nav-text">HISTORY</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bottom-content">
+                        <!-- <li class="">
+                            <a href="#">
+                                <i class='bx bx-log-out icon' ></i>
+                                <span class="text nav-text">Logout</span>
+                            </a>
+                        </li> -->
+                        <li class="mode">
+                            <div class="sun-moon">
+                                <i class='bx bx-moon icon moon'></i>
+                                <i class='bx bx-sun icon sun'></i>
+                            </div>
+                            <span class="mode-text text">Dark mode</span>
+                            <div class="toggle-switch">
+                                <span class="switch"></span>
+                            </div>
+                        </li>
+                        
+                    </div>
+                </div>
+            </nav>
+
+            <section class="home">
+               
+                    <div class="text">Expense Tracker</div>
+                
+                <div class="center">
+                    <div class="container-home">
+                        <div class="title">
+                            <i class="uil uil-bill"></i>
+                            <span class="text" >Your Balance</span>
+                            <span class="text" id="balance">50,120</span>
+                        </div>
+
+                        <div class="boxes">
+                            <div class="box box1">
+                                <i class="uil uil-money-insert"></i>
+                                <span class="text">Income</span>
+                                <span class="number" id="income">50,120</span>
+                            </div>
+                            <div class="box box2">
+                                <i class="uil uil-money-withdrawal"></i>
+                                <span class="text">Expense</span>
+                                <span class="number" id="expense">20,120</span>
+                            </div>
+                        </div>
+
+                        <div class="activity">
+                            <div class="title">
+                                <i class="uil uil-clock-three"></i>
+                                <span class="text">Recent Activity</span>
+                            </div>
+
+                            <div class="activity-data">
+                                <div class="data date">
+                                    <span class="data-title">Date</span>
+                                    <span class="data-list">17/11/2566</span>
+                                </div>  
+                                
+                                <div class="data amout">
+                                    <span class="data-title">Amout</span>
+                                    <span class="data-list">300</span>
+                                </div>  
+                                
+                                <div class="data tag">
+                                    <span class="data-title">Tag</span>
+                                    <span class="data-list">Other</span>
+                                </div> 
+                            </div>
+                        </div>
+
+                    </div>
+                    
+
+                    <div class="container-input">
+                        <center>
+                            <span class="text">INPUT</span>
+                        </center>    
+                           
+    
+                        <div class="ios13-segmented-control">
+                            <span class="selection"></span>
+                
+                            <div class="option">
+                                <input type="radio" id="inputType" name="sample" value="income" checked>
+                                <label for="inputType"><span>Income</span></label>
+                            </div>
+                
+                            <div class="option">
+                                <input type="radio" id="inputType" name="sample" value="expense">
+                                <label for="inputType"><span>Expense</span></label>
+                            </div>
+                
+                            <script type="text/javascript">
+                                // Constants
+                              
+                                const SEGMENTED_CONTROL_BASE_SELECTOR = ".ios13-segmented-control";
+                                const SEGMENTED_CONTROL_INDIVIDUAL_SEGMENT_SELECTOR = ".ios13-segmented-control .option input";
+                                const SEGMENTED_CONTROL_BACKGROUND_PILL_SELECTOR = ".ios13-segmented-control .selection";
+                              
+                              
+                                // Main
+                              
+                                document.addEventListener("DOMContentLoaded", setup);
+                              
+                                // Body functions
+                              
+                                function setup() {
+                                  forEachElement(SEGMENTED_CONTROL_BASE_SELECTOR, elem => {    
+                                    elem.addEventListener("change", updatePillPosition);
+                                  })
+                                  window.addEventListener("resize", updatePillPosition); // Prevent pill from detaching from element when window resized. Becuase this is rare I haven't bothered with throttling the event 
+                                }
+                              
+                                function updatePillPosition() {    
+                                  forEachElement(SEGMENTED_CONTROL_INDIVIDUAL_SEGMENT_SELECTOR, (elem, index) => {
+                                    if (elem.checked) moveBackgroundPillToElement(elem, index);
+                                  })
+                                }
+                              
+                                function moveBackgroundPillToElement(elem, index) {
+                                  document.querySelector(SEGMENTED_CONTROL_BACKGROUND_PILL_SELECTOR).style.transform = "translateX(" + (elem.offsetWidth * index) + "px)";
+                                }
+                              
+                                // Helper functions
+                              
+                                function forEachElement(className, fn) {
+                                  Array.from(document.querySelectorAll(className)).forEach(fn);
+                                }
+                              
+                              </script>
+                
+                        </div>
+
+                        <div class="input-all-container">
+                            <div class="inputdate">
+                                <form >
+                                <span class="data-title">Date</span>
+                                
+                                    <!-- <input type="date" required /> -->
+                                    <button type="button" id="date" i class="fa-solid fa-calendar-check"></button>
+                                    <span id="selectedDate"></span>
+
+                                    <script>
+                                        const today = new Date();
+                                        // If the user didn't choose a date, set it to today
+                                        const defaultDate = today.toISOString().split("T")[0];
+                                              // Update the selected date element with the default date
+                                              document.getElementById('selectedDate').innerText = `${defaultDate}`;
+                                            
+                                        document.getElementById('date').addEventListener('click', async () => {
+                                          try {
+                                            const today = new Date();
+                                            const yearAgo = new Date();
+                                            yearAgo.setDate(today.getDate() - 365);
+                                        
+                                            const { value: date } = await Swal.fire({
+                                              title: "Select Date",
+                                              input: "date",
+                                              didOpen: () => {
+                                                const maxDate = today.toISOString().split("T")[0];
+                                                const minDate = yearAgo.toISOString().split("T")[0];
+                                                Swal.getInput().min = minDate;
+                                                Swal.getInput().max = maxDate;
+                                              },
+                                              showCancelButton: true,
+                                              inputValidator: (value) => {
+                                                if (!value) {
+                                                  return "Please select a date.";
+                                                }else {
+                                                // Call the isValidDate function from another JS file
+                                                const isValid = isValidDate(value);
+
+                                                if (!isValid) {
+                                                    return 'Invalid date!'; // You can customize the error message
+                                                }
+                                                }
+                                              }
+                                            });
+                                        
+                                            if (date) {
+                                              Swal.fire("Transaction Date", date);
+                                              // Update the selected date element with the chosen date
+                                              document.getElementById('selectedDate').innerText = `${date}`;
+                                            } else {
+                                              // If the user didn't choose a date, set it to today
+                                              const defaultDate = today.toISOString().split("T")[0];
+                                              Swal.fire("Transaction Date", defaultDate);
+                                              // Update the selected date element with the default date
+                                              document.getElementById('selectedDate').innerText = `${defaultDate}`;
+                                            }
+                                          } catch (error) {
+                                            console.error("Error displaying date input:", error);
+                                          }
+                                        });
+                                        </script>
+                                    <div class="inputamount">
+                                        <span class="data-title">Amount</span>
+                                        <input type="number" id="tAmount" min="0" required>
+                                    </div>
+                                    <div class="inputtag">
+                                        <span class="data-title">Tag</span>
+                                        
+                                        <!-- Drop down tags goes here -->
+                  
+                                        <button type="button" id="add" i class="fa-solid fa-plus"></button>
+                                        <script>
+                                            document.getElementById('add').addEventListener('click', async () => {
+                                              try {
+                                                const { value: inputValue } = await Swal.fire({
+                                                  title: 'Create New Tag',
+                                                  input: 'text',
+                                                  inputPlaceholder: 'Type your name tag here',
+                                                  inputAttributes: {
+                                                    'aria-label': 'Type your name tag',
+                                                    'style': 'width: 85%; box-sizing: border-box;'
+                                                  },
+                                                  showCancelButton: true,
+                                                  inputValidator: (value) => {
+                                                    if (!value) {
+                                                      return 'You need to write something!';
+                                                    }
+                                                  }
+                                                });
+                                            
+                                                if (inputValue) {
+                                                  Swal.fire(`Input value: ${inputValue}`);
+                                                }
+                                              } catch (error) {
+                                                console.error('Error displaying input:', error);
+                                              }
+                                            });
+                                            </script>
+                                    </div>
+                                    <div class="inputtext">
+                                        <span class="data-title">Memo</span>
+                                        <input type="text" id="tMemo" required>
+                                    </div>
+                                    
+                                    <button type="submit" id="transaction" onclick="submitForm(event)">Complete</button>
+                                </form>
+
+
+                                <script>
+                                    function submitForm(event) {
+                                      const date = document.getElementById('selectedDate').innerText;
+                                      const type = document.getElementById('inputType').value;
+                                      const amount = document.getElementById('tAmount').value;
+                                      const tag = document.getElementById('tags').value;
+                                      const memo = document.getElementById('tMemo').value;
+                                  
+                                      if (!amount ||!memo) {
+                                            alert('Please fill in all required fields.');
+                                            return; // Stop further execution
+                                        }
+                                        event.preventDefault();
+                                        document.getElementById('tAmount').value = '';
+                                        document.getElementById('tMemo').value = '';
+                                        document.getElementById('tags').value = 'Other';
+                                      // Create an object with the data
+                                      const transactionData = {
+                                        input_type: type,
+                                        date: date,
+                                        amount: amount,
+                                        tag: tag,
+                                        text: memo
+                                      };
+                                  
+                                      // Make an AJAX request
+                                      fetch('/submitForm', {
+                                        method: 'POST',
+                                        headers: {
+                                          'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify(transactionData),
+                                      })
+                                      .then(response => response.json())
+                                      .then(data => {
+                                        console.log('Success:', data);
+                                        // You can handle success (e.g., show a success message)
+                                      })
+                                      .catch((error) => {
+                                        //console.error('Error:', error);
+                                        // Handle errors (e.g., show an error message)
+                                      });
+                                    }
+                                  </script>
+                            </div>
+
+                           
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </section>
+
+            
+
+            <script>
+                const body = document.querySelector('body'),
+                sidebar = body.querySelector('nav'),
+                toggle = body.querySelector(".toggle"),
+                modeSwitch = body.querySelector(".toggle-switch"),
+                modeText = body.querySelector(".mode-text");
+                
+                toggle.addEventListener("click" , () =>{
+                    sidebar.classList.toggle("close");
+                 })
+                modeSwitch.addEventListener("click" , () =>{
+                    body.classList.toggle("dark");
+            
+                    if(body.classList.contains("dark")){
+                        modeText.innerText = "Light mode";
+                    }else{
+                        modeText.innerText = "Dark mode";
+                
+                     }
+                    });
+            </script>
+            </div>
+
+
+            
+        </div>
+
+     </body> 
+</html>
