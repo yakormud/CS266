@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <link rel="stylesheet" href="history.css">
+
+    <!----===== Boxicons CSS ===== -->
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+
+    <!----===== Iconscout CSS ===== -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <title>History</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="container-sidebar">
+            <nav class="sidebar close">
+                <header>
+                    <div class="image-text">
+                        <span class="image">
+                            <img src="logo_cs266.png" alt="">
+                        </span>
+                        <div class="text logo-text">
+                            <span class="name">Expense Tracker</span>
+                            <span class="profession">CS266</span>
+                        </div>
+                    </div>
+                    <i class='bx bx-chevron-right toggle'></i>
+                </header>
+
+                <div class="menu-bar">
+                    <div class="menu">
+                        <ul class="menu-links">
+                            <li class="nav-link">
+                                <a href="#">
+                                    <i class='bx bx-home-alt icon'></i>
+                                    <span class="text nav-text">HOME</span>
+                                </a>
+                            </li>
+                            
+                            <li class="nav-link">
+                                <a href="#">
+                                    <i class='bx bx-tag icon'></i>
+                                    <span class="text nav-text">TAG</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-link">
+                                <a href="#">
+                                    <i class='bx bx-history icon'></i>
+                                    <span class="text nav-text">HISTORY</span>
+                                </a>
+                            </li>
+
+                            
+                        </ul>
+                    </div>
+
+                    <div class="bottom-content">
+                        <!-- <li class="">
+                            <a href="#">
+                                <i class='bx bx-log-out icon' ></i>
+                                <span class="text nav-text">Logout</span>
+                            </a>
+                        </li> -->
+                        <li class="mode">
+                            <div class="sun-moon">
+                                <i class='bx bx-moon icon moon'></i>
+                                <i class='bx bx-sun icon sun'></i>
+                            </div>
+                            <span class="mode-text text">Dark mode</span>
+                            <div class="toggle-switch">
+                                <span class="switch"></span>
+                            </div>
+                        </li>
+
+                    </div>
+                </div>
+            </nav>
+
+            <section class="home">
+
+
+
+
+                <div class="center">
+                    <div class="container-home">
+                        <div class="text">History</div>
+                        <div class="title">
+                            <i class="uil uil-money-insert"></i>
+                            <span class="text">Income</span>
+                            <span class="text" id="dailyIncome">50,120</span>
+
+                            
+                                <i class="uil uil-money-withdrawal"></i>
+                                <span class="text">Expense</span>
+                                <span class="text" id="dailyExpense">20,120</span>
+                            
+                        </div>
+
+                        <div class="activity">
+
+                            <!-- <div class="title">
+                                <i class="uil uil-clock-three"></i>
+                                <span class="text">Date</span>
+                            </div> -->
+
+                            <div class="activity-data">
+                                <div class="data-date">
+                                    <span class="data-title">Date</span>
+                                    <span class="data-list">17/11/2566</span>
+                                </div>
+                                <div class="boxes">
+                                    <div class="box box1">
+                                        <div class="data-income">
+                                            <span class="data-title">Income</span>
+                                            <span class="data-list">50,120</span>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="box box2">
+                                        <div class="data-expense">
+                                            <span class="data-title">Expense</span>
+                                            <span class="data-list">20,120</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="container-input">
+                        <div class="input-all-container">
+                            <div class="inputmonth">    
+                                    <input type="radio" name="monthSortType" value="January" checked="checked"id="sort-January"><label for="sort-January">January</label>
+                                    <input type="radio" name="monthSortType" value="February" id="sort-February"><label for="sort-February">February</label>
+                                    <input type="radio" name="monthSortType" value="March" id="sort-March"><label for="sort-March">March</label>
+                                    <input type="radio" name="monthSortType" value="April" id="sort-April"><label for="sort-April">April</label>
+                                    <input type="radio" name="monthSortType" value="May" id="sort-May"><label for="sort-May">May</label>
+                                    <input type="radio" name="monthSortType" value="June" id="sort-June"><label for="sort-June">June</label>
+                                    <input type="radio" name="monthSortType" value="July" id="sort-July"><label for="sort-July">July</label>
+                                    <input type="radio" name="monthSortType" value="August" id="sort-August"><label for="sort-August">August</label>
+                                    <input type="radio" name="monthSortType" value="September" id="sort-September"><label for="sort-September">September</label>
+                                    <input type="radio" name="monthSortType" value="October" id="sort-October"><label for="sort-October">October</label>
+                                    <input type="radio" name="monthSortType" value="November" id="sort-November"><label for="sort-November">November</label>
+                                    <input type="radio" name="monthSortType" value="December" id="sort-December"><label for="sort-December">December</label>   
+                            </div>
+                            <script>
+                                $('.inputmonth').click(function (e) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    $(this).toggleClass('expanded');
+                                    $('#' + $(e.target).attr('for')).prop('checked', true);
+                                });
+                                $(document).click(function () {
+                                    $('.inputmonth').removeClass('expanded');
+                                });
+                            </script>
+
+
+                            
+                            <div class="inputtag">
+                                
+
+                                <div class="dropdown-el">
+                                    <input type="radio" name="sortType" value="Food" checked="checked" id="sort-Food"><label for="sort-Food">Food</label>
+                                    <input type="radio" name="sortType" value="Transport" id="sort-Transport"><label for="sort-Transport">Transport</label>
+                                    <input type="radio" name="sortType" value="Travel" id="sort-Travel"><label for="sort-Travel">Travel</label>
+                                    <input type="radio" name="sortType" value="Other" id="sort-Other"><label for="sort-Other">Other</label>
+                                </div>
+                                <script>
+                                    $('.dropdown-el').click(function(e) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    $(this).toggleClass('expanded');
+                                    $('#'+$(e.target).attr('for')).prop('checked',true);
+                                    });
+                                    $(document).click(function() {
+                                    $('.dropdown-el').removeClass('expanded');
+                                    });
+                                </script>
+                            </div>
+                            
+                            <button type="button" id="search" i class="fa-regular fa-square-check"></button>
+                            
+                            
+                        </div>
+                        
+
+
+                    </div>
+
+                </div>
+        </div>
+        </section>
+
+
+
+        <script>
+            const body = document.querySelector('body'),
+                sidebar = body.querySelector('nav'),
+                toggle = body.querySelector(".toggle"),
+                modeSwitch = body.querySelector(".toggle-switch"),
+                modeText = body.querySelector(".mode-text");
+
+            toggle.addEventListener("click", () => {
+                sidebar.classList.toggle("close");
+            })
+            modeSwitch.addEventListener("click", () => {
+                body.classList.toggle("dark");
+
+                if (body.classList.contains("dark")) {
+                    modeText.innerText = "Light mode";
+                } else {
+                    modeText.innerText = "Dark mode";
+
+                }
+            });
+        </script>
+    </div>
+
+
+
+    </div>
+
+</body>
+
+</html>
