@@ -5,16 +5,16 @@ const fs = require('fs');
 
 const PORT = 8080;
 
-app.get('/', (req, res) => {
-  fs.readFile('./src/home.html', 'utf8', (err, html) => {
-    if (err) {
-      res.status(500).send('Internal Server Error');
-      return;
-    }
+// app.get('/', (req, res) => {
+//   fs.readFile('./src/home.html', 'utf8', (err, html) => {
+//     if (err) {
+//       res.status(500).send('Internal Server Error');
+//       return;
+//     }
 
-    res.send(html);
-  });
-});
+//     res.send(html);
+//   });
+// });
 
 // Serve static files (CSS, JS, images, etc.) from the 'public' directory
 app.use(express.static('src'));
@@ -22,6 +22,7 @@ app.use(bodyParser.json());
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
+  console.log("hihihihihihi");
 });
 
 
@@ -59,9 +60,9 @@ run().catch(console.dir);
 
 // ...
 
-app.get('/user', async (req, res) => {
+app.get('/', async (req, res) => {
   // ...
-
+  
   try {
     
     //Connect Syntax
