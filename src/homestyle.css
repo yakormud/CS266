@@ -431,11 +431,6 @@ body.dark .home .text{
     display: flex;
 }
 
-.container-home {
-    width: 55%;
-    display: relative;
-    /* background-color: lightblue; */
-}
 
 .container-input {
     width: 45%;
@@ -443,9 +438,17 @@ body.dark .home .text{
     top: 0;
     top: 0;
     height: 100vh;
-    display: relative;
+    /* display: relative; */
     box-shadow: 0px 15px 20px rgba(0,0,0,0.1);
     margin-left: 30px;
+    /* margin-top: 15px; */
+
+    align-content: flex-end;
+    position: relative; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
     /* background-color: #dde2f6 */
     /* background-color: #FAF000; */
     
@@ -598,7 +601,7 @@ body.dark .home .text{
 .inputdate {
     display: flex;
     flex-direction: row;
-    margin-top: 30px;
+    margin-top: 40px;
     gap: 15px;
 }
 
@@ -606,23 +609,23 @@ body.dark .home .text{
     display: flex;
     flex-direction: row;
     gap: 15px;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .inputtag{
     position: relative;
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
     gap: 15px;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .inputtext {
     display: flex;
     flex-direction: row;
     gap: 15px;
-    margin-top: 30px;
+    margin-top: 40px;
 }
 /* input[type="date"]{
     background-color:var(--input-color);
@@ -683,7 +686,6 @@ input[type=text] {
     border-radius: 5px;
     color: var(--text-color);
     background-color: var(--bar-color);
-    margin-top: 7px;
 }
 
 #add:hover {
@@ -720,8 +722,8 @@ input[type=text] {
 #transaction {
     width: 100px;
     height: 40px;
-    margin-left: 130px;
-    margin-top: 20px;
+    margin-left: 30%;
+    margin-top: 40px;
     border: none;
     border-radius: 6px;
     color: var(--text-color) ;
