@@ -6,7 +6,7 @@ const fs = require('fs');
 const PORT = 8080;
 
 app.get('/', (req, res) => {
-  fs.readFile('./src/index.html', 'utf8', (err, html) => {
+  fs.readFile('./src/home.html', 'utf8', (err, html) => {
     if (err) {
       res.status(500).send('Internal Server Error');
       return;
@@ -26,7 +26,7 @@ app.listen(PORT, () => {
 
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://yakor:yakor@cs266.hlnjicp.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -65,10 +65,58 @@ app.get('/user', async (req, res) => {
   try {
     
     //Connect Syntax
+    const client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
     const database = client.db("CS266");
     const collection = database.collection("User");
     const collectionTag = database.collection("Tag");
+    console.log('x');
+      // Use the aggregation framework to sum up the values
+    //  collection.aggregate([
+    //     {
+    //       $group: {
+    //         _id: null,
+    //         total: { $sum: '$amount' }
+    //       }
+    //     }
+    //   ]).toArray(function (err, result) {
+    //     if (err) throw err; else console.log("there");
+    
+
+        // const total = result.length > 0 ? result[0].total : 0;
+        // console.log(total);
+
+         // Find all documents in the collection
+          const documents = await collection.find({}).toArray();
+          
+          // Sum up the values in the "amount" field
+          const totalAmount = documents.reduce((sum, doc) => sum + (parseInt(doc.amount) || 0), 0);
+
+          // Log the total amount
+          console.log('Total Amount:', totalAmount);
+          let homepage = fs.readFileSync('./src/home.html', 'utf8');
+          console.log('hi');
+          homepage = homepage.replace('{income}',totalAmount);
+          // res.send(homepage);
+        
+//try
+const documents2 = await collection.aggregate([
+  {
+    $group: {
+      _id: '$input_type', // Group by input_type field
+      totalAmount: { $sum: { $toInt: '$amount' } }// Sum the amount field
+    }
+  }
+]).toArray();
+
+console.log(totalAmount + 20) // this works
+// Extract the results for income and expense
+const incomeSum = (documents2.find(item => item._id === 'income') || {}).totalAmount || 0;
+const expenseSum = (documents2.find(item => item._id === 'expense') || {}).totalAmount || 0;
+
+console.log('Income Sum:', incomeSum);
+console.log('Expense Sum:', expenseSum);
+
 
     // Query Syntax
     const result = await collectionTag.find({}).toArray();
@@ -97,7 +145,10 @@ app.get('/user', async (req, res) => {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Combine and sent to page
-    const finalHTML = staticHTML.replace('<!-- Drop down tags goes here -->', dynamicHTML)
+    let finalHTML = staticHTML.replace('<!-- Drop down tags goes here -->', dynamicHTML);
+    finalHTML = finalHTML.replace('{income}',incomeSum);
+    finalHTML = finalHTML.replace('{expense}',expenseSum);
+    finalHTML = finalHTML.replace('{balance}',incomeSum-expenseSum);
     //.replace('<!-- INSERT_DYNAMIC_CONTENT_HERE2 -->', dynamicHTML2);
 
     // Send the response
@@ -115,7 +166,7 @@ app.get('/user', async (req, res) => {
 app.post('/insertData', async (req, res) => {
   try {
     // Connect to MongoDB
-    const client = new MongoClient("mongodb+srv://yakor:yakor@cs266.hlnjicp.mongodb.net/?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true });
+    const client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
 
     // Specify the database and collection you want to insert data into
@@ -199,7 +250,7 @@ app.post('/submitForm', async (req, res) => {
   let client
   try {
     // Connect to MongoDB
-    client = new MongoClient("mongodb+srv://yakor:yakor@cs266.hlnjicp.mongodb.net/?retryWrites=true&w=majority");
+    client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/");
     await client.connect();
 
     // Specify the database and collection you want to insert data into
