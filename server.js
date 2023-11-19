@@ -75,7 +75,6 @@ app.use(bodyParser.json());
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
-  console.log("hihihihihihi");
 });
 
 
@@ -103,7 +102,7 @@ async function run() {
     const result = await collection.find(query).toArray();
 
     // Output the result
-    console.log(result);
+    // console.log(result);
   } finally {
     // Ensures that the client will close when you finish/error
     await client.close();
@@ -124,21 +123,6 @@ app.get('/', async (req, res) => {
     const database = client.db("CS266");
     const collection = database.collection("User");
     const collectionTag = database.collection("Tag");
-    console.log('x');
-      // Use the aggregation framework to sum up the values
-    //  collection.aggregate([
-    //     {
-    //       $group: {
-    //         _id: null,
-    //         total: { $sum: '$amount' }
-    //       }
-    //     }
-    //   ]).toArray(function (err, result) {
-    //     if (err) throw err; else console.log("there");
-    
-
-        // const total = result.length > 0 ? result[0].total : 0;
-        // console.log(total);
 
          // Find all documents in the collection
           const documents = await collection.find({}).toArray();
@@ -146,14 +130,12 @@ app.get('/', async (req, res) => {
           // Sum up the values in the "amount" field
           const totalAmount = documents.reduce((sum, doc) => sum + (parseInt(doc.amount) || 0), 0);
 
-          // Log the total amount
-          console.log('Total Amount:', totalAmount);
+          // console.log('Total Amount:', totalAmount);
           let homepage = fs.readFileSync('./src/home.html', 'utf8');
-          console.log('hi');
           homepage = homepage.replace('{income}',totalAmount);
           // res.send(homepage);
         
-//try
+//Sum up with aggregate 
 const documents2 = await collection.aggregate([
   {
     $group: {
@@ -163,7 +145,7 @@ const documents2 = await collection.aggregate([
   }
 ]).toArray();
 
-console.log(totalAmount + 20) // this works
+// console.log(totalAmount + 20) // this works
 // Extract the results for income and expense
 const incomeSum = (documents2.find(item => item._id === 'income') || {}).totalAmount || 0;
 const expenseSum = (documents2.find(item => item._id === 'expense') || {}).totalAmount || 0;
