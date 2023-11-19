@@ -16,6 +16,59 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/history', async (req, res) => {
+  // ...
+
+  try {
+    
+    //Connect Syntax
+    await client.connect();
+    const database = client.db("CS266");
+    const collection = database.collection("User");
+    const collectionTag = database.collection("Tag");
+
+    // Query Syntax
+    const result = await collectionTag.find({}).toArray();
+    const result2 = await collection.find().toArray();
+
+    // Read the static HTML file
+    const staticHTML = fs.readFileSync('./src/history.html', 'utf8');
+
+    ///////////////// END OF SET-UP   NOW ITS HTML BUILDING /////////////////////////////////////
+
+    // Build dynamic HTML content For result1
+    let dynamicHTML = '<select name="tags" id="tags">';
+      dynamicHTML += `<option value="None">No tag select</option>`;
+      dynamicHTML += `<option value="Other">Other</option>`;
+    result.forEach(row => {
+      dynamicHTML += `<option value="${row.tag}">${row.tag}</option>`;
+      //dynamicHTML += `<div>${doc.date}</div>`; 
+    });
+    dynamicHTML += '</select>';
+
+    // Build dynamic HTML content For result2
+
+    let dynamicHTML2 = '';
+    result2.forEach(doc => {
+      dynamicHTML2 += `<div>${doc.tag}</div>`; 
+    });
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Combine and sent to page
+    const finalHTML = staticHTML.replace('<!-- Drop down tags goes here -->', dynamicHTML)
+    //.replace('<!-- INSERT_DYNAMIC_CONTENT_HERE2 -->', dynamicHTML2);
+
+    // Send the response
+    res.send(finalHTML);
+
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    // Close the connection
+    await client.close();
+  }
+});
+
 // Serve static files (CSS, JS, images, etc.) from the 'public' directory
 app.use(express.static('src'));
 app.use(bodyParser.json());

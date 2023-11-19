@@ -42,7 +42,7 @@
                     <div class="menu">
                         <ul class="menu-links">
                             <li class="nav-link">
-                                <a href="#">
+                                <a href="/user">
                                     <i class='bx bx-home-alt icon'></i>
                                     <span class="text nav-text">HOME</span>
                                 </a>
@@ -93,114 +93,151 @@
 
 
 
-                <div class="center">
+                <div class="center" style="display: flex;justify-content: space-between;">
                     <div class="container-home">
                         <div class="text">History</div>
                         <div class="title">
-                            <i class="uil uil-money-insert"></i>
-                            <span class="text">Income</span>
-                            <span class="text" id="dailyIncome">50,120</span>
+                            <!-- <i class="uil uil-money-insert"></i>
+                            <i class="uil uil-money-withdrawal"></i> -->
+                            <div class="monthTitle">
+                                <p>November 2023</p>
+                            </div>
+                            
+                        </div>
+                        <div class="titleContainer">
+                            <div class="titleBubble">
+                                <p1>Total Revenue</p1>
+                                <br>
+                                <i class="uil uil-money-insert" style="background-color: gold;"></i>
+                                <span>12830</span>
 
-                            
-                                <i class="uil uil-money-withdrawal"></i>
-                                <span class="text">Expense</span>
-                                <span class="text" id="dailyExpense">20,120</span>
-                            
+                            </div>
+                            <div class="titleBubble">
+                                <p1>Income</p1>
+                                <br>
+                                <i class="uil uil-money-insert" style="background-color: greenyellow;"></i>
+                                <span>19380</span>
+
+                            </div>
+                            <div class="titleBubble">
+                                <p1>Expense</p1>
+                                <br>
+                                <i class="uil uil-money-insert" style="background-color: rgb(255, 99, 99);"></i>
+                                <span>6570</span>
+
+                            </div>
                         </div>
 
                         <div class="activity">
+                            <div class="activityTitle">
+                                <p>Activities</p>
+                            </div>
 
-                            <!-- <div class="title">
-                                <i class="uil uil-clock-three"></i>
-                                <span class="text">Date</span>
-                            </div> -->
+                            <!-- DATE GOES HERE-->
 
-                            <div class="activity-data">
-                                <div class="data-date">
-                                    <span class="data-title">Date</span>
-                                    <span class="data-list">17/11/2566</span>
+                            <div class="dateTitle">
+                                <p style="margin-left: 1%;">2023-10-08</p>
+                            </div>
+
+                            <div class="activityIncome">
+                                <div class="activityHeader">
+                                    <h3>Income </h3>
+                                    <h3>150</h3>
                                 </div>
-                                <div class="boxes">
-                                    <div class="box box1">
-                                        <div class="data-income">
-                                            <span class="data-title">Income</span>
-                                            <span class="data-list">50,120</span>
-                                        </div>
+                                <div class="activityLine">
+                                    <div class="activityInfo">
+                                        <h5>Other</h5>
+                                        <p>Buying something</p>
                                     </div>
-
-
-                                    <div class="box box2">
-                                        <div class="data-expense">
-                                            <span class="data-title">Expense</span>
-                                            <span class="data-list">20,120</span>
-                                        </div>
+                                    <p>50</p>
+                                </div>
+                                <div class="activityLine">
+                                    <div class="activityInfo">
+                                        <h5>Other</h5>
+                                        <p>Buying something</p>
                                     </div>
+                                    <p>50</p>
+                                </div>
+                                <div class="activityLine">
+                                    <div class="activityInfo">
+                                        <h5>Other</h5>
+                                        <p>Buying something</p>
+                                    </div>
+                                    <p>50</p>
                                 </div>
                             </div>
+
+                            
+
+                            
 
                         </div>
 
                     </div>
-                    <div class="container-input">
-                        <div class="input-all-container">
-                            <div class="inputmonth">    
-                                    <input type="radio" name="monthSortType" value="January" checked="checked"id="sort-January"><label for="sort-January">January</label>
-                                    <input type="radio" name="monthSortType" value="February" id="sort-February"><label for="sort-February">February</label>
-                                    <input type="radio" name="monthSortType" value="March" id="sort-March"><label for="sort-March">March</label>
-                                    <input type="radio" name="monthSortType" value="April" id="sort-April"><label for="sort-April">April</label>
-                                    <input type="radio" name="monthSortType" value="May" id="sort-May"><label for="sort-May">May</label>
-                                    <input type="radio" name="monthSortType" value="June" id="sort-June"><label for="sort-June">June</label>
-                                    <input type="radio" name="monthSortType" value="July" id="sort-July"><label for="sort-July">July</label>
-                                    <input type="radio" name="monthSortType" value="August" id="sort-August"><label for="sort-August">August</label>
-                                    <input type="radio" name="monthSortType" value="September" id="sort-September"><label for="sort-September">September</label>
-                                    <input type="radio" name="monthSortType" value="October" id="sort-October"><label for="sort-October">October</label>
-                                    <input type="radio" name="monthSortType" value="November" id="sort-November"><label for="sort-November">November</label>
-                                    <input type="radio" name="monthSortType" value="December" id="sort-December"><label for="sort-December">December</label>   
-                            </div>
-                            <script>
-                                $('.inputmonth').click(function (e) {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    $(this).toggleClass('expanded');
-                                    $('#' + $(e.target).attr('for')).prop('checked', true);
-                                });
-                                $(document).click(function () {
-                                    $('.inputmonth').removeClass('expanded');
-                                });
-                            </script>
 
-
-                            
-                            <div class="inputtag">
-                                
-
-                                <div class="dropdown-el">
-                                    <input type="radio" name="sortType" value="Food" checked="checked" id="sort-Food"><label for="sort-Food">Food</label>
-                                    <input type="radio" name="sortType" value="Transport" id="sort-Transport"><label for="sort-Transport">Transport</label>
-                                    <input type="radio" name="sortType" value="Travel" id="sort-Travel"><label for="sort-Travel">Travel</label>
-                                    <input type="radio" name="sortType" value="Other" id="sort-Other"><label for="sort-Other">Other</label>
-                                </div>
-                                <script>
-                                    $('.dropdown-el').click(function(e) {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    $(this).toggleClass('expanded');
-                                    $('#'+$(e.target).attr('for')).prop('checked',true);
-                                    });
-                                    $(document).click(function() {
-                                    $('.dropdown-el').removeClass('expanded');
-                                    });
-                                </script>
-                            </div>
-                            
-                            <button type="button" id="search" i class="fa-regular fa-square-check"></button>
-                            
-                            
+                    <div class="container-graph" style="background-color: aquamarine;">
+                        <div class="graphTitle">
+                            <p>Filter</p>
                         </div>
-                        
+                        <div class="graphContainer">
+                            <select name="month" id="month">
+                            </select>
+                            <!-- Drop down tags goes here -->
+                        </div>
 
+                        <script>
+                            // Function to get the month name
+                            function getMonthName(monthIndex) {
+                                const months = [
+                                    "January", "February", "March", "April", "May", "June",
+                                    "July", "August", "September", "October", "November", "December"
+                                ];
+                                return months[monthIndex];
+                            }
+                    
+                            // Function to populate the select element with months
+                            function populateMonths() {
+                                const monthSelect = document.getElementById("month");
+                    
+                                // Get the current date
+                                const currentDate = new Date();
+                                let temp = currentDate.getMonth();
+                    
+                                // Loop to add the last 12 months to the select options
+                                for (let i = 0; i < 12; i++) {
+                                    const monthIndex = (currentDate.getMonth() - i + 12) % 12;
+                                    let year = currentDate.getFullYear();
+
+                                    if(currentDate.getMonth() < monthIndex){
+                                        year = currentDate.getFullYear()-1;
+                                    }
+                    
+                                    const optionText = getMonthName(monthIndex) + ' ' + year;
+                                    const optionValue = `${year}-${(monthIndex + 1).toString().padStart(2, '0')}`;
+                    
+                                    // Create and append the option element
+                                    const option = document.createElement("option");
+                                    option.value = optionValue;
+                                    option.text = optionText;
+                    
+                                    monthSelect.add(option);
+                                }
+                            }
+                    
+                            // Call the function to populate the select elements
+                            populateMonths();
+
+                            document.getElementById("month").addEventListener("change", function () {
+                                console.log(this.value);
+                            });
+                            document.getElementById("tags").addEventListener("change", function () {
+                                console.log(this.value);
+                            });
+                        </script>
 
                     </div>
+                    
+
 
                 </div>
         </div>
