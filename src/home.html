@@ -168,8 +168,7 @@
                             <span class="text">INPUT</span>
                         </center>    
                            
-    
-                        <div class="ios13-segmented-control">
+                        <div>
                             <span class="selection"></span>
                 
                             <div class="option">
@@ -183,12 +182,6 @@
                             </div>
                 
                             <script type="text/javascript">
-                                // Constants
-                              
-                                const SEGMENTED_CONTROL_BASE_SELECTOR = ".ios13-segmented-control";
-                                const SEGMENTED_CONTROL_INDIVIDUAL_SEGMENT_SELECTOR = ".ios13-segmented-control .option input";
-                                const SEGMENTED_CONTROL_BACKGROUND_PILL_SELECTOR = ".ios13-segmented-control .selection";
-                              
                               
                                 // Main
                               
@@ -362,8 +355,9 @@
 
                                 <script>
                                     function submitForm(event) {
+                                      const type = document.querySelector('input[name="sample"]:checked').value;
                                       const date = document.getElementById('selectedDate').innerText;
-                                      const type = document.getElementById('inputType').value;
+                                      // const type = document.getElementById('inputType').value;
                                       const amount = document.getElementById('tAmount').value;
                                       const tag = document.getElementById('tags').value;
                                       const memo = document.getElementById('tMemo').value;
@@ -396,7 +390,8 @@
                                       .then(response => response.json())
                                       .then(data => {
                                         console.log('Success:', data);
-                                        
+                                        location.reload();
+                                      
                                         // You can handle success (e.g., show a success message)
                                       })
                                       .catch((error) => {
