@@ -247,6 +247,98 @@ app.post('/insertData', async (req, res) => {
 // });
 
 
+
+
+app.get('/tag', async (req, res) => {
+  try {
+    // Connect to MongoDB
+    const client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true });
+    await client.connect();
+
+    // Specify the database and collection to fetch tags from
+    const database = client.db("CS266");
+    const collection = database.collection("Tag");
+
+    // Fetch tags from the collection
+    const tags = await collection.find({}).toArray();
+
+    // Read the static HTML file
+    const staticHTML = fs.readFileSync('./src/tag.html', 'utf8');
+
+    // Inject the fetched tags into the HTML content
+    const modifiedHTML = injectDynamicContent(staticHTML, tags);
+
+    // Send the response
+    res.send(modifiedHTML);
+
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Internal Server Error');
+  } finally {
+    // Close the MongoDB connection
+    await client.close();
+  }
+});
+
+function injectDynamicContent(staticHTML, tags) {
+  // Create the dynamic content based on the tags array
+  const dynamicContent = generateDynamicContent(tags);
+
+  // Replace the placeholder in the static HTML with the dynamic content
+  const modifiedHTML = staticHTML.replace('<!-- INSERT_DYNAMIC_CONTENT_HERE -->', dynamicContent);
+
+  return modifiedHTML;
+}
+
+function generateDynamicContent(tags) {
+  // Create the dynamic content based on the tags array
+  let dynamicHTML = '<div id="data-list">';
+  tags.forEach(tag => {
+    dynamicHTML += `<div><button class="tag-button" data-tag-id="${tag._id}">${tag.tag}</button></div>`;
+  });
+  dynamicHTML += '</div>';
+  return dynamicHTML;
+}
+
+app.delete('/deleteTag/:tagId', async (req, res) => {
+  try {
+    const { MongoClient, ObjectId } = require('mongodb');
+    const tagId = req.params.tagId;
+    console.log('Deleting tag with ID:', tagId);
+
+    // Connect to MongoDB
+    const client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true });
+    
+    // Use a try-finally block to ensure the connection is closed even if an error occurs
+    try {
+      await client.connect();
+
+      // Specify the database and collection to delete the tag from
+      const database = client.db("CS266");
+      const collection = database.collection("Tag");
+
+      // Delete the tag from MongoDB
+      const result = await collection.deleteOne({ _id: new ObjectId(tagId) });
+
+
+      if (result.deletedCount === 1) {
+        console.log('Tag deleted successfully:', result);
+        res.json({ success: true, message: 'Tag deleted successfully' });
+      } else {
+        console.log('Tag not found:', result);
+        res.status(404).json({ success: false, message: 'Tag not found' });
+      }
+    } finally {
+      // Close the MongoDB connection in the finally block
+      await client.close();
+    }
+  } catch (error) {
+    // Log any errors that occur during the deletion process
+    console.error('Error deleting tag:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
 app.post('/submitForm', async (req, res) => {
   let client
   try {
@@ -290,4 +382,36 @@ app.post('/submitForm', async (req, res) => {
 
 // ...
 
+app.post('/addtag', async (req, res) => {
+  let client;
+  try {
+    // Connect to MongoDB
+    client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/");
+    await client.connect();
 
+    // Specify the database and collection you want to insert data into
+    const database = client.db("CS266");
+    const collection = database.collection("Tag");
+
+    // Get the data from the request body
+    const { tag } = req.body;
+
+    // Document to be inserted
+    const documentToInsert = {
+      tag: tag,
+    };
+
+    // Insert the document
+    const result = await collection.insertOne(documentToInsert);
+
+    console.log(`Document inserted with _id: ${result.insertedId}`);
+
+    res.send('Data inserted successfully!');
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Internal Server Error');
+  } finally {
+    // Close the MongoDB connection
+    await client.close();
+  }
+});

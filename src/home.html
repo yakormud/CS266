@@ -59,32 +59,30 @@
                 </header>
                 
                 <div class="menu-bar">
-                    <div class="menu">
-                        <ul class="menu-links">
-                            <li class="nav-link">
-                                <a href="#">
-                                    <i class='bx bx-home-alt icon' ></i>
-                                    <span class="text nav-text">HOME</span>
-                                </a>
-                            </li>
+                  <div class="menu">
+                    <ul class="menu-links">
+                        <li class="nav-link">
+                            <a href="home.html">
+                                <i class='bx bx-home-alt icon'></i>
+                                <span class="text nav-text">HOME</span>
+                            </a>
+                        </li>
 
-                            <li class="nav-link">
-                              <a href="#">
-                                  <i class='bx bx-tag icon'></i>
-                                  <span class="text nav-text">TAG</span>
-                              </a>
-                          </li>
-                            
-                            <li class="nav-link">
-                                <a href="#">
-                                    <i class='bx bx-history icon'></i>
-                                    <span class="text nav-text">HISTORY</span>
-                                </a>
-                            </li>
+                        <li class="nav-link">
+                            <a href="tag.html">
+                                <i class='bx bx-tag icon'></i>
+                                <span class="text nav-text">TAG</span>
+                            </a>
+                        </li>
 
-                            
-                        </ul>
-                    </div>
+                        <li class="nav-link">
+                            <a href="history.html">
+                                <i class='bx bx-history icon'></i>
+                                <span class="text nav-text">HISTORY</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
 
                     <div class="bottom-content">
                         <!-- <li class="">
@@ -297,31 +295,59 @@
                   
                                         <button type="button" id="add" i class="fa-solid fa-plus"></button>
                                         <script>
-                                            document.getElementById('add').addEventListener('click', async () => {
-                                              try {
-                                                const { value: inputValue } = await Swal.fire({
-                                                  title: 'Create New Tag',
-                                                  input: 'text',
-                                                  inputPlaceholder: 'Type your name tag here',
-                                                  inputAttributes: {
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                    const addButton = document.getElementById('add');
+
+                                    // Define submitForm function
+                                    function submitForm(inputValue) {
+                                        // ตัวอย่าง: ส่ง request ไปยัง server
+                                        fetch('/addtag', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({ tag: inputValue }),
+                                        })
+                                        .then(() => {
+                                            // Reload the page after the request is successful
+                                            location.reload();
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                        });
+                                    }
+
+                                    // Check if the event listener is already attached
+                                    if (!addButton.hasListener) {
+                                        addButton.hasListener = true;
+
+                                        addButton.addEventListener('click', function () {
+                                            Swal.fire({
+                                                title: 'Create New Tag',
+                                                input: 'text',
+                                                inputPlaceholder: 'Type your name tag here',
+                                                inputAttributes: {
                                                     'aria-label': 'Type your name tag',
                                                     'style': 'width: 85%; box-sizing: border-box;'
-                                                  },
-                                                  showCancelButton: true,
-                                                  inputValidator: (value) => {
+                                                },
+                                                showCancelButton: true,
+                                                inputValidator: (value) => {
                                                     if (!value) {
-                                                      return 'You need to write something!';
+                                                        return 'You need to write something!';
                                                     }
-                                                  }
-                                                });
-                                            
-                                                if (inputValue) {
-                                                  Swal.fire(`Input value: ${inputValue}`);
+                                                },
+                                                preConfirm: (inputValue) => {
+                                                    // Process the input value as needed
+                                                    submitForm(inputValue);
+                                                },
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    Swal.fire(`Input value: ${result.value}`);
                                                 }
-                                              } catch (error) {
-                                                console.error('Error displaying input:', error);
-                                              }
                                             });
+                                        });
+                                    }
+                                });
                                             </script>
                                     </div>
                                     <div class="inputtext">
