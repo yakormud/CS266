@@ -738,6 +738,56 @@ input[type=text] {
     color: var(--text-color);
     background-color: var(--bar-hover);
 }
+/*incom expense*/
+.container-input .option{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.container-input .option .option2{
+
+    margin-left: 20px;
+}
+
+#pattern input[type="radio"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    position: relative;
+    width: 25px;
+    height: 25px;
+    color: var(--bar-color);
+    background-color: var(--sidebar-color);
+    border-radius: 50%;
+    transition: all 0.3s;
+    /* margin-left: 20px; */
+  }
+  #pattern input[type="radio"]::before {
+    font-family: 'Noto Color Emoji', sans-serif;
+    position: absolute;
+    top: 4px;
+    left: 2px;
+    width: 25px;
+    height: 25px;
+    font-size: 25px;
+    line-height: 25px;
+    content: "";
+    opacity: 0;
+    transition: all 0.3s;
+    /* margin-left: 20px; */
+  }
+  #pattern input[type="radio"]:nth-of-type(1)::before {
+    content: "💸";
+  }
+ 
+  #pattern input[type="radio"]:checked {
+    transform: scale(0.5);
+  }
+  #pattern input[type="radio"]:checked::before {
+    opacity: 1;
+    transform: scale(2.3);
+  }
 
 /* Dropdown  */
 .dropdown-el {
@@ -826,3 +876,5 @@ input[type=text] {
     transform: rotate(-180deg);
     top: 0.55em;
   }
+
+  
