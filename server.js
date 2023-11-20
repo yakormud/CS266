@@ -120,7 +120,7 @@ app.get('/transacData', async (req, res) => {
                 
                   if(userHistory.length <= 0 ){
 
-                      headerDom += '<center><h>No Recent Activity Today</h></center>';
+                      headerDom += '<center><h><div class = "dateUpper">No Recent Activity Today</div></h></center>';
 
                     
                   }else{
