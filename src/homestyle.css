@@ -40,7 +40,7 @@ body.dark{
     --primary-color: #3a3b3c;
     --primary-color-light: #3a3b3c;
     --toggle-color: #fff;
-    --text-color: #ccc;
+    --text-color: #dddddd;
     --box1-color: #3A3B3C;
     --box2-color: #3A3B3C;
     --input-color:#ccc;
@@ -1009,6 +1009,10 @@ input[type=text] {
     margin-left: 7%;
     margin-bottom: 1%;
     color: var(--text-color);
+}
+
+.tags{
+    font-weight: 300;
 }
 
   

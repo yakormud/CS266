@@ -626,7 +626,7 @@ const expenseSum = (documents2.find(item => item._id === 'expense') || {}).total
     ///////////////// END OF SET-UP   NOW ITS HTML BUILDING /////////////////////////////////////
 
     // Build dynamic HTML content For result1
-    let dynamicHTML = '<select name="tags" id="tags" class = "dropdown-el">';
+    let dynamicHTML = '<select name="tags" id="tags" class = "dropdown-el" >';
       dynamicHTML += `<option value="Other">Other</option>`;
     result.forEach(row => {
       dynamicHTML += `<option value="${row.tag}">${row.tag}</option>`;
