@@ -1003,11 +1003,11 @@ input[type=text] {
 }
 
 .pageHeader {
-    font-size: 150%;
+    font-size: 30px;
+    font-weight: 500;
     margin-top: 1%;
     margin-left: 7%;
     margin-bottom: 1%;
-    font-weight: 600;
     color: var(--text-color);
 }
 
