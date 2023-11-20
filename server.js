@@ -15,7 +15,157 @@ const PORT = 8080;
 //     res.send(html);
 //   });
 // });
-// 
+//
+
+app.get('/transacData', async (req, res) => {
+  const staticHTML = fs.readFileSync('./src/home.html', 'utf8');
+  // ...
+
+  try {
+        
+    let { month } = req.query;
+    //console.log (month);
+    //Connect Syntax
+    await client.connect();
+    const database = client.db("CS266");
+    const collection = database.collection("User");
+     const sumOfIncome = await collection.aggregate([
+      {
+        $match: {
+          "input_type": "income",
+          "date": { $regex: month }
+        }
+      },
+      {
+        $addFields: {
+          parsedAmount: { $toInt: "$amount" }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalIncome: { $sum: "$parsedAmount" }
+        }
+      }
+    ]).toArray();
+    const sumOfExpense = await collection.aggregate([
+      {
+        $match: {
+          "input_type": "expense",
+          "date": { $regex: month }
+        }
+      },
+      {
+        $addFields: {
+          parsedAmount: { $toInt: "$amount" }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalIncome: { $sum: "$parsedAmount" }
+        }
+      }
+    ]).toArray();
+    
+    // The result will be an array with a single document containing the totalIncome
+    const totalIncome = sumOfIncome.length > 0 ? sumOfIncome[0].totalIncome : 0;
+    const totalExpense = sumOfExpense.length > 0 ? sumOfExpense[0].totalIncome : 0;
+    //console.log("TotalD Income:", totalIncome);
+    //console.log("TotalD Expense:", totalExpense);
+    //console.log("TotalD Revenue:", totalIncome-totalExpense);
+
+    if(month){
+      let headerDom = `<div class="pageHeader">
+                          <h>Expense Tracker</h>
+                       </div>
+                    <div class="titleContainer">
+                    <div class="titleBubble">
+                        <p1>Total Revenue</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: gold;"></i>
+                        <span>${totalIncome-totalExpense}</span>
+
+                    </div>
+                    <div class="titleBubble">
+                        <p1>Income</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: greenyellow;"></i>
+                        <span>${totalIncome}</span>
+
+                    </div>
+                    <div class="titleBubble">
+                        <p1>Expense</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: rgb(255, 99, 99);"></i>
+                        <span>${totalExpense}</span>
+
+                    </div>
+                  </div>`;
+
+
+                  headerDom += '<div class="activity">';
+                  let query;
+                     query = {
+                      "date": { $regex: month }
+                  };
+                  
+                                  
+                  const sort = {
+                      "date": -1
+                 };
+                                  
+                  let userHistory = await collection.find(query).sort(sort).toArray();
+                  //let dateSet = new Set();
+                
+                  if(userHistory.length <= 0 ){
+
+                      headerDom += '<center><h>No Recent Activity Today</h></center>';
+
+                    
+                  }else{
+                    headerDom += '<center><h>Today Activity</h> <br></center>';
+                
+                    userHistory.forEach(row => {
+                      
+                      headerDom += `<div class="activityIncome">
+                                      <div class="activity-container">
+                                          <div class="activityInfo">
+                                              <p class="act-header">${row.text}</p>`;
+                      if(row.input_type == "income"){
+                        headerDom += `<p class="act-header">+ ${row.amount}</p>`;
+                      }else{
+                        headerDom += `<p class="act-header">- ${row.amount}</p>`;
+                      }
+                      headerDom +=`</div>
+                                          <div class="activityInfo">
+                                              <p class="act-lower" style="color: darkgray;">${row.date}</p>`;
+                      if(row.input_type == "income"){
+                        headerDom += `<p class="act-lower" style="color: green;">${row.tag}</p>`;
+                      }else{
+                        headerDom += `<p class="act-lower" style="color: red;">${row.tag}</p>`;
+                      }
+                      headerDom +=  `</div>
+                                      </div>
+                                  </div>`;
+                    });
+                  }
+                
+                
+                  headerDom += '</div>';
+      res.send(headerDom);
+      return;
+    }
+
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    // Close the connection
+    await client.close();
+  }
+});
+
+
 
 app.get('/historyData', async (req, res) => {
   const staticHTML = fs.readFileSync('./src/history.html', 'utf8');
@@ -429,7 +579,7 @@ app.get('/', async (req, res) => {
   try {
     
     //Connect Syntax
-    const client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true });
+    const client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/");
     await client.connect();
     const database = client.db("CS266");
     const collection = database.collection("User");
