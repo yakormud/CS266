@@ -71,9 +71,9 @@ app.get('/historyData', async (req, res) => {
     // The result will be an array with a single document containing the totalIncome
     const totalIncome = sumOfIncome.length > 0 ? sumOfIncome[0].totalIncome : 0;
     const totalExpense = sumOfExpense.length > 0 ? sumOfExpense[0].totalIncome : 0;
-    console.log("TotalD Income:", totalIncome);
-    console.log("TotalD Expense:", totalExpense);
-    console.log("TotalD Revenue:", totalIncome-totalExpense);
+    //console.log("TotalD Income:", totalIncome);
+    //console.log("TotalD Expense:", totalExpense);
+    //console.log("TotalD Revenue:", totalIncome-totalExpense);
 
     if(month && tag){
       let headerDom = `<div class="titleContainer">
@@ -99,6 +99,68 @@ app.get('/historyData', async (req, res) => {
 
                     </div>
                   </div>`;
+
+
+                  headerDom += '<div class="activity">';
+                  let query;
+                  if(tag == "None") {
+                     query = {
+                      "date": { $regex: month }
+                  };
+                  }else{
+                    query = {
+                      "date": { $regex: month },
+                      "tag" : tag
+                  };
+                  }
+                                  
+                  const sort = {
+                      "date": -1
+                 };
+                                  
+                  let userHistory = await collection.find(query).sort(sort).toArray();
+                  let dateSet = new Set();
+                
+                  if(userHistory.length <= 0 ){
+                    if(tag != "None"){
+                      headerDom += '<center><h>No Activity match "'+ tag +'"</h></center>';
+                    }else{
+                      headerDom += '<center><h>No Activity</h></center>';
+                    }
+                    
+                  }else{
+                    headerDom += '<center><h>Recent Activity</h> <br></center>';
+                
+                    userHistory.forEach(row => {
+                      if(!dateSet.has(row.date)){
+                        headerDom += `<br><h class="dateUpper">${row.date}</h>`;
+                        dateSet.add(row.date);
+                      }
+                      headerDom += `<div class="activityIncome">
+                                      <div class="activity-container">
+                                          <div class="activityInfo">
+                                              <p class="act-header">${row.text}</p>`;
+                      if(row.input_type == "income"){
+                        headerDom += `<p class="act-header">+ ${row.amount}</p>`;
+                      }else{
+                        headerDom += `<p class="act-header">- ${row.amount}</p>`;
+                      }
+                      headerDom +=`</div>
+                                          <div class="activityInfo">
+                                              <p class="act-lower" style="color: darkgray;">${row.date}</p>`;
+                      if(row.input_type == "income"){
+                        headerDom += `<p class="act-lower" style="color: green;">${row.tag}</p>`;
+                      }else{
+                        headerDom += `<p class="act-lower" style="color: red;">${row.tag}</p>`;
+                      }
+                      headerDom +=  `</div>
+                                      </div>
+                                  </div>`;
+                    });
+                  }
+                
+                
+                  headerDom += '</div>';
       res.send(headerDom);
       return;
     }
@@ -209,9 +271,9 @@ app.get('/history', async (req, res) => {
     // The result will be an array with a single document containing the totalIncome
     const totalIncome = sumOfIncome.length > 0 ? sumOfIncome[0].totalIncome : 0;
     const totalExpense = sumOfExpense.length > 0 ? sumOfExpense[0].totalIncome : 0;
-    console.log("Total Income:", totalIncome);
-    console.log("Total Expense:", totalExpense);
-    console.log("Total Revenue:", totalIncome-totalExpense);
+    //console.log("Total Income:", totalIncome);
+    //console.log("Total Expense:", totalExpense);
+    //console.log("Total Revenue:", totalIncome-totalExpense);
 
 
   //   ///////////////// END OF SET-UP   NOW ITS HTML BUILDING /////////////////////////////////////
@@ -251,63 +313,56 @@ app.get('/history', async (req, res) => {
 
                     </div>
                   </div>`;
-  //   let dateSet = new Set(); // Use a Set to keep track of unique dates
-  //   let dynamicHTML2 = '';
-  //   dynamicHTML2 += `<div class="titleBubble">
-  //                         <p1>Total Revenue</p1>
-  //                         <br>
-  //                         <i class="uil uil-money-insert" style="background-color: gold;"></i>
-  //                         <span>12830</span>
+  
+  headerDom += '<div class="activity">';
+  const query = {
+      "date": { $regex: month }
+  };
+                  
+  const sort = {
+      "date": -1
+ };
+                  
+  let userHistory = await collection.find(query).sort(sort).toArray();
+  let dateSet = new Set();
 
-  //                     </div>
-  //                     <div class="titleBubble">
-  //                         <p1>Income</p1>
-  //                         <br>
-  //                         <i class="uil uil-money-insert" style="background-color: greenyellow;"></i>
-  //                         <span>19380</span>
+  if(userHistory.length < 0 ){
+    headerDom += '<center><h>No Activity</h></center>';
+  }else{
+    headerDom += '<center><h>Recent Activity</h> <br></center>';
 
-  //                     </div>
-  //                     <div class="titleBubble">
-  //                         <p1>Expense</p1>
-  //                         <br>
-  //                         <i class="uil uil-money-insert" style="background-color: rgb(255, 99, 99);"></i>
-  //                         <span>6570</span>
+    userHistory.forEach(row => {
+      if(!dateSet.has(row.date)){
+        headerDom += `<br><h class="dateUpper">${row.date}</h>`;
+        dateSet.add(row.date);
+      }
+      headerDom += `<div class="activityIncome">
+                      <div class="activity-container">
+                          <div class="activityInfo">
+                              <p class="act-header">${row.text}</p>`;
+      if(row.input_type == "income"){
+        headerDom += `<p class="act-header">+ ${row.amount}</p>`;
+      }else{
+        headerDom += `<p class="act-header">- ${row.amount}</p>`;
+      }
+      headerDom +=`</div>
+                          <div class="activityInfo">
+                              <p class="act-lower" style="color: darkgray;">${row.date}</p>`;
+      if(row.input_type == "income"){
+        headerDom += `<p class="act-lower" style="color: green;">${row.tag}</p>`;
+      }else{
+        headerDom += `<p class="act-lower" style="color: red;">${row.tag}</p>`;
+      }
+      headerDom +=  `</div>
+                      </div>
+                  </div>`;
+    });
+  }
 
-  //                     </div>
-  //                     </div>
-  //                   <div class="activity">`;
 
-  // result2.forEach(doc => {
-  //   const date = doc.date;
-
-  //   // Check if the date is not already in the Set
-  //   if (!dateSet.has(date)) {
-  //     dynamicHTML2 += `<div class="dateTitle" id="dateTitle">
-  //                         <p style="margin-left: 5%;">${date}</p>
-  //                       </div>`;
-
-  //     dynamicHTML2 += `<div class="activityIncome">
-  //                         <div class="activityLine">
-  //                               <div class="activityInfo">
-  //                                   <h5>${doc.input_type}</h5>
-  //                                   <p>${doc.text}</p>
-  //                               </div>
-  //                               <p>${doc.amount}</p>
-  //                         </div>
-  //                         `;
-  //     dateSet.add(date); // Add the date to the Set to mark it as seen
-  //   }else{
-  //     dynamicHTML2 += `
-  //                         <div class="activityLine">
-  //                               <div class="activityInfo">
-  //                                   <h5>${doc.input_type}</h5>
-  //                                   <p>${doc.text}</p>
-  //                               </div>
-  //                               <p>${doc.amount}</p>
-  //                     </div>`;
-  //   }
-  // });
-  // //dynamicHTML2+= `<p style="margin-left: 5%;">${month} - ${tag}</p>`;
+  headerDom += '</div>';
+  
+                  
 
   //   ////////////////////////////////////////////////////////////////////////////////////////////////
   //   // Combine and sent to page

@@ -859,7 +859,7 @@ input[type="date"] {
 
 .activity {
     margin-top: 4%;
-    width: 100%;
+    width: 120%;
     margin-left: 7%;
     display: block;
     font-size: 120%;
@@ -885,11 +885,41 @@ input[type="date"] {
     margin-top: 1%;
 }
 
-.activityIncome h3{
-    margin-left: 2%;
-    margin-right: 2%;
-    /* color: white */
+.activity-container {
+    background-color: white;
+    border-radius: 5px;
+
 }
+
+.activity-container p{
+    padding: 2%;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.dateUpper {
+    margin-top: 5%;
+    font-weight: 600;
+}
+
+.act-header {
+    font-size: 100%;
+    font-weight: 500;
+}
+
+.act-lower {
+    font-size: 90%;
+}
+
+.activityInfo {
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+
+
 
 .activityLine {
     display: flex;
@@ -928,16 +958,5 @@ input[type="date"] {
     gap: 10%;
 }
 
-.activityInfo {
-    display: flex;
-    width: 70%;
-    overflow: hidden;
-    text-overflow:ellipsis;
-    white-space: nowrap;
-}
-
-.activityInfo h5 {
-    margin-top: 1%;
-}
 
 
