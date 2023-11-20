@@ -117,18 +117,52 @@
                 
                 <div class="center">
                     <div class="container-home">
-                      <div class="text">Expense Tracker</div>
-                        <div class="title">
+                        <div id="activity">
+
+                        </div>
+                        <script>
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    const today = new Date();
+
+                                            // Get the components of the date
+                                            const year = today.getFullYear();
+                                            const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
+                                            const day = String(today.getDate()).padStart(2, '0');
+
+                                            // Format the date as "YYYY-MM-DD"
+                                            const formattedDate = `${year}-${month}-${day}`;
+                                    console.log(formattedDate);
+                                // Function to fetch and update content
+                                function updateContent() {
+                                    const month = formattedDate;
+
+                                    // Fetch /history with the selected date as a query parameter
+                                    fetch(`/transacData?month=${month}`)
+                                        .then(response => response.text())
+                                        .then(html => {
+                                            // Update the content of the history container
+                                            document.getElementById('activity').innerHTML = html;
+                                        })
+                                        .catch(error => console.error('Error fetching /history:', error));
+                                }
+
+                                // Event listener for month change
+                                 document.getElementById("transaction").addEventListener("click", function () {
+                                     updateContent();
+                                 });
+
+                                // Call the function on page load
+                                updateContent();
+                            });
+                        </script>
+                      <!-- <div class="text">Expense Tracker</div> -->
+                        <!-- <div class="title">
                             <i class="uil uil-bill"></i>
                             <span class="text" >Your Balance</span>
                             <span class="text" id="balance">{balance}</span>
-                            <!-- update balance -->
-                            <script>
+                        </div> -->
 
-                            </script>
-                        </div>
-
-                        <div class="boxes">
+                        <!-- <div class="boxes">
                             <div class="box box1">
                                 <i class="uil uil-money-bill"></i>
                                 <span class="text">Income</span>
@@ -139,9 +173,25 @@
                                 <span class="text">Expense</span>
                                 <span class="number" id="expense">{expense}</span>
                             </div>
-                        </div>
+                        </div> -->
 
-                        <div class="activity">
+                        <!-- <script>
+                          // Fetch JSON data from the server
+                          fetch('/user/data')
+                            .then(response => response.json())
+                            .then(jsonData => {
+                              // Update the HTML content with the received JSON data
+                              document.getElementById('income').textContent = jsonData.incomeSum;
+                              document.getElementById('expense').textContent = jsonData.expenseSum;
+                              document.getElementById('balance').textContent = jsonData.balance;
+                              console.log('hi');
+                            })
+                            .catch(error => {
+                              console.error('Error fetching JSON:', error);
+                            });
+                        </script> -->
+
+                        <!-- <div class="activity">
                             <div class="title">
                                 <i class="uil uil-clock-three"></i>
                                 <span class="text">Recent Activity</span>
@@ -150,20 +200,20 @@
                             <div class="activity-data">
                                 <div class="data date">
                                     <span class="data-title">Date</span>
-                                    <span class="data-list">17/11/2566</span>
+                                    <span class="data-list">{date}</span>
                                 </div>  
                                 
                                 <div class="data amout">
-                                    <span class="data-title">Amout</span>
-                                    <span class="data-list">300</span>
+                                    <span class="data-title">Amount</span>
+                                    <span class="data-list">{amount}</span>
                                 </div>  
                                 
                                 <div class="data tag">
                                     <span class="data-title">Tag</span>
-                                    <span class="data-list">Other</span>
+                                    <span class="data-list">{tag}</span>
                                 </div> 
                             </div>
-                        </div>
+                        </div> -->
 
                     </div>
                     
@@ -395,15 +445,42 @@
                                       .then(response => response.json())
                                       .then(data => {
                                         console.log('Success:', data);
+                                        // // Fetch JSON data from the server
+                                        //   fetch('/user/data')
+                                        //     .then(response => response.json())
+                                        //     .then(jsonData => {
+                                        //       // Update the HTML content with the received JSON data
+                                        //       document.getElementById('income').textContent = jsonData.incomeSum;
+                                        //       document.getElementById('expense').textContent = jsonData.expenseSum;
+                                        //       document.getElementById('balance').textContent = jsonData.balance;
+                                        //       console.log('hi');
+                                        //     })
+                                        //     .catch(error => {
+                                        //       console.error('Error fetching JSON:', error);
+                                        //     });
                                         location.reload();
                                       
                                         // You can handle success (e.g., show a success message)
                                       })
+
                                       .catch((error) => {
                                         //console.error('Error:', error);
                                         // Handle errors (e.g., show an error message)
                                       });
                                     }
+                                    // function fetchData() {
+                                    //   fetch('/')
+                                    //     .then(response => response.json())
+                                    //     .then(data => {
+                                    //       // Process the data
+                                    //       displayData(data);
+                                    //     })
+                                    //     .catch(error => {
+                                    //       // Handle errors
+                                    //       console.error('Error:', error);
+                                    //     });
+                                    // }
+                                    
                                   </script>
                             </div>
 

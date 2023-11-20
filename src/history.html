@@ -108,43 +108,6 @@
 
                          <div class="activity">  
 
-                            <div class="dateTitle">
-                                <p style="margin-left: 1%;">2023-10-08</p>
-                            </div>
-
-                            <div class="activityIncome">
-                                <div class="activityHeader">
-                                    <h3>Income </h3>
-                                    <h3>150</h3>
-                                </div>
-                                <div class="activityLine">
-                                    <div class="activityInfo">
-                                        <h5>Other</h5>
-                                        <p>Buying something</p>
-                                    </div>
-                                    <p>50</p>
-                                </div>
-                                <div class="activityLine">
-                                    <div class="activityInfo">
-                                        <h5>Other</h5>
-                                        <p>Buying something</p>
-                                    </div>
-                                    <p>50</p>
-                                </div>
-                                <div class="activityLine">
-                                    <div class="activityInfo">
-                                        <h5>Other</h5>
-                                        <p>Buying something</p>
-                                    </div>
-                                    <p>50</p>
-                                </div> 
-                            </div>
-
-                            
-                            
-
-                            
-
                         </div>
                     </div>
 
@@ -195,6 +158,23 @@
                             populateMonths();
 
                             document.getElementById("month").addEventListener("change", function () {
+                                const month = document.getElementById("month").value;
+                                const tag = document.getElementById("tags").value;
+                                console.log(this.value);
+                                // Fetch /history with the selected date as a query parameter
+                                fetch(`/historyData?month=${month}&&tag=${tag}`)
+                                    .then(response => response.text())
+                                    .then(html => {
+                                    // Update the content of the history container
+                                    document.getElementById('activity').innerHTML = html;
+                                    })
+                                    .catch(error => console.error('Error fetching /history:', error));
+                            });
+                            document.getElementById("tags").addEventListener("change", function () {
+                                console.log(this.value);
+                            });
+
+                            document.getElementById("tags").addEventListener("change", function () {
                                 const month = document.getElementById("month").value;
                                 const tag = document.getElementById("tags").value;
                                 console.log(this.value);

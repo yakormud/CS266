@@ -15,7 +15,157 @@ const PORT = 8080;
 //     res.send(html);
 //   });
 // });
-// 
+//
+
+app.get('/transacData', async (req, res) => {
+  const staticHTML = fs.readFileSync('./src/home.html', 'utf8');
+  // ...
+
+  try {
+        
+    let { month } = req.query;
+    //console.log (month);
+    //Connect Syntax
+    await client.connect();
+    const database = client.db("CS266");
+    const collection = database.collection("User");
+     const sumOfIncome = await collection.aggregate([
+      {
+        $match: {
+          "input_type": "income",
+          "date": { $regex: month }
+        }
+      },
+      {
+        $addFields: {
+          parsedAmount: { $toInt: "$amount" }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalIncome: { $sum: "$parsedAmount" }
+        }
+      }
+    ]).toArray();
+    const sumOfExpense = await collection.aggregate([
+      {
+        $match: {
+          "input_type": "expense",
+          "date": { $regex: month }
+        }
+      },
+      {
+        $addFields: {
+          parsedAmount: { $toInt: "$amount" }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalIncome: { $sum: "$parsedAmount" }
+        }
+      }
+    ]).toArray();
+    
+    // The result will be an array with a single document containing the totalIncome
+    const totalIncome = sumOfIncome.length > 0 ? sumOfIncome[0].totalIncome : 0;
+    const totalExpense = sumOfExpense.length > 0 ? sumOfExpense[0].totalIncome : 0;
+    //console.log("TotalD Income:", totalIncome);
+    //console.log("TotalD Expense:", totalExpense);
+    //console.log("TotalD Revenue:", totalIncome-totalExpense);
+
+    if(month){
+      let headerDom = `<div class="pageHeader">
+                          <h>Expense Tracker</h>
+                       </div>
+                    <div class="titleContainer">
+                    <div class="titleBubble">
+                        <p1>Total Revenue</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: gold;"></i>
+                        <span>${totalIncome-totalExpense}</span>
+
+                    </div>
+                    <div class="titleBubble">
+                        <p1>Income</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: greenyellow;"></i>
+                        <span>${totalIncome}</span>
+
+                    </div>
+                    <div class="titleBubble">
+                        <p1>Expense</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: rgb(255, 99, 99);"></i>
+                        <span>${totalExpense}</span>
+
+                    </div>
+                  </div>`;
+
+
+                  headerDom += '<div class="activity">';
+                  let query;
+                     query = {
+                      "date": { $regex: month }
+                  };
+                  
+                                  
+                  const sort = {
+                      "date": -1
+                 };
+                                  
+                  let userHistory = await collection.find(query).sort(sort).toArray();
+                  //let dateSet = new Set();
+                
+                  if(userHistory.length <= 0 ){
+
+                      headerDom += '<center><h><div class = "dateUpper">No Recent Activity Today</div></h></center>';
+
+                    
+                  }else{
+                    headerDom += '<center><h><div class = "dateUpper">Today Activity</div></h> <br></center>';
+                
+                    userHistory.forEach(row => {
+                      
+                      headerDom += `<div class="activityIncome">
+                                      <div class="activity-container">
+                                          <div class="activityInfo">
+                                              <p class="act-header">${row.text}</p>`;
+                      if(row.input_type == "income"){
+                        headerDom += `<p class="act-header">+ ${row.amount}</p>`;
+                      }else{
+                        headerDom += `<p class="act-header">- ${row.amount}</p>`;
+                      }
+                      headerDom +=`</div>
+                                          <div class="activityInfo">
+                                              <p class="act-lower" style="color: darkgray;">${row.date}</p>`;
+                      if(row.input_type == "income"){
+                        headerDom += `<p class="act-lower" style="color: green;">${row.tag}</p>`;
+                      }else{
+                        headerDom += `<p class="act-lower" style="color: red;">${row.tag}</p>`;
+                      }
+                      headerDom +=  `</div>
+                                      </div>
+                                  </div>`;
+                    });
+                  }
+                
+                
+                  headerDom += '</div>';
+      res.send(headerDom);
+      return;
+    }
+
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    // Close the connection
+    await client.close();
+  }
+});
+
+
 
 app.get('/historyData', async (req, res) => {
   const staticHTML = fs.readFileSync('./src/history.html', 'utf8');
@@ -71,9 +221,9 @@ app.get('/historyData', async (req, res) => {
     // The result will be an array with a single document containing the totalIncome
     const totalIncome = sumOfIncome.length > 0 ? sumOfIncome[0].totalIncome : 0;
     const totalExpense = sumOfExpense.length > 0 ? sumOfExpense[0].totalIncome : 0;
-    console.log("TotalD Income:", totalIncome);
-    console.log("TotalD Expense:", totalExpense);
-    console.log("TotalD Revenue:", totalIncome-totalExpense);
+    //console.log("TotalD Income:", totalIncome);
+    //console.log("TotalD Expense:", totalExpense);
+    //console.log("TotalD Revenue:", totalIncome-totalExpense);
 
     if(month && tag){
       let headerDom = `<div class="titleContainer">
@@ -99,6 +249,68 @@ app.get('/historyData', async (req, res) => {
 
                     </div>
                   </div>`;
+
+
+                  headerDom += '<div class="activity">';
+                  let query;
+                  if(tag == "None") {
+                     query = {
+                      "date": { $regex: month }
+                  };
+                  }else{
+                    query = {
+                      "date": { $regex: month },
+                      "tag" : tag
+                  };
+                  }
+                                  
+                  const sort = {
+                      "date": -1
+                 };
+                                  
+                  let userHistory = await collection.find(query).sort(sort).toArray();
+                  let dateSet = new Set();
+                
+                  if(userHistory.length <= 0 ){
+                    if(tag != "None"){
+                      headerDom += '<center><h>No Activity match "'+ tag +'"</h></center>';
+                    }else{
+                      headerDom += '<center><h>No Activity</h></center>';
+                    }
+                    
+                  }else{
+                    headerDom += '<center><h>Recent Activity</h> <br></center>';
+                
+                    userHistory.forEach(row => {
+                      if(!dateSet.has(row.date)){
+                        headerDom += `<br><h class="dateUpper">${row.date}</h>`;
+                        dateSet.add(row.date);
+                      }
+                      headerDom += `<div class="activityIncome">
+                                      <div class="activity-container">
+                                          <div class="activityInfo">
+                                              <p class="act-header">${row.text}</p>`;
+                      if(row.input_type == "income"){
+                        headerDom += `<p class="act-header">+ ${row.amount}</p>`;
+                      }else{
+                        headerDom += `<p class="act-header">- ${row.amount}</p>`;
+                      }
+                      headerDom +=`</div>
+                                          <div class="activityInfo">
+                                              <p class="act-lower" style="color: darkgray;">${row.date}</p>`;
+                      if(row.input_type == "income"){
+                        headerDom += `<p class="act-lower" style="color: green;">${row.tag}</p>`;
+                      }else{
+                        headerDom += `<p class="act-lower" style="color: red;">${row.tag}</p>`;
+                      }
+                      headerDom +=  `</div>
+                                      </div>
+                                  </div>`;
+                    });
+                  }
+                
+                
+                  headerDom += '</div>';
       res.send(headerDom);
       return;
     }
@@ -209,9 +421,9 @@ app.get('/history', async (req, res) => {
     // The result will be an array with a single document containing the totalIncome
     const totalIncome = sumOfIncome.length > 0 ? sumOfIncome[0].totalIncome : 0;
     const totalExpense = sumOfExpense.length > 0 ? sumOfExpense[0].totalIncome : 0;
-    console.log("Total Income:", totalIncome);
-    console.log("Total Expense:", totalExpense);
-    console.log("Total Revenue:", totalIncome-totalExpense);
+    //console.log("Total Income:", totalIncome);
+    //console.log("Total Expense:", totalExpense);
+    //console.log("Total Revenue:", totalIncome-totalExpense);
 
 
   //   ///////////////// END OF SET-UP   NOW ITS HTML BUILDING /////////////////////////////////////
@@ -251,63 +463,56 @@ app.get('/history', async (req, res) => {
 
                     </div>
                   </div>`;
-  //   let dateSet = new Set(); // Use a Set to keep track of unique dates
-  //   let dynamicHTML2 = '';
-  //   dynamicHTML2 += `<div class="titleBubble">
-  //                         <p1>Total Revenue</p1>
-  //                         <br>
-  //                         <i class="uil uil-money-insert" style="background-color: gold;"></i>
-  //                         <span>12830</span>
+  
+  headerDom += '<div class="activity">';
+  const query = {
+      "date": { $regex: month }
+  };
+                  
+  const sort = {
+      "date": -1
+ };
+                  
+  let userHistory = await collection.find(query).sort(sort).toArray();
+  let dateSet = new Set();
 
-  //                     </div>
-  //                     <div class="titleBubble">
-  //                         <p1>Income</p1>
-  //                         <br>
-  //                         <i class="uil uil-money-insert" style="background-color: greenyellow;"></i>
-  //                         <span>19380</span>
+  if(userHistory.length < 0 ){
+    headerDom += '<center><h>No Activity</h></center>';
+  }else{
+    headerDom += '<center><h><div class = "dateUpper">Recent Activity</div></h> <br></center>';
 
-  //                     </div>
-  //                     <div class="titleBubble">
-  //                         <p1>Expense</p1>
-  //                         <br>
-  //                         <i class="uil uil-money-insert" style="background-color: rgb(255, 99, 99);"></i>
-  //                         <span>6570</span>
+    userHistory.forEach(row => {
+      if(!dateSet.has(row.date)){
+        headerDom += `<br><h class="dateUpper">${row.date}</h>`;
+        dateSet.add(row.date);
+      }
+      headerDom += `<div class="activityIncome">
+                      <div class="activity-container">
+                          <div class="activityInfo">
+                              <p class="act-header">${row.text}</p>`;
+      if(row.input_type == "income"){
+        headerDom += `<p class="act-header">+ ${row.amount}</p>`;
+      }else{
+        headerDom += `<p class="act-header">- ${row.amount}</p>`;
+      }
+      headerDom +=`</div>
+                          <div class="activityInfo">
+                              <p class="act-lower" style="color: darkgray;">${row.date}</p>`;
+      if(row.input_type == "income"){
+        headerDom += `<p class="act-lower" style="color: green;">${row.tag}</p>`;
+      }else{
+        headerDom += `<p class="act-lower" style="color: red;">${row.tag}</p>`;
+      }
+      headerDom +=  `</div>
+                      </div>
+                  </div>`;
+    });
+  }
 
-  //                     </div>
-  //                     </div>
-  //                   <div class="activity">`;
 
-  // result2.forEach(doc => {
-  //   const date = doc.date;
-
-  //   // Check if the date is not already in the Set
-  //   if (!dateSet.has(date)) {
-  //     dynamicHTML2 += `<div class="dateTitle" id="dateTitle">
-  //                         <p style="margin-left: 5%;">${date}</p>
-  //                       </div>`;
-
-  //     dynamicHTML2 += `<div class="activityIncome">
-  //                         <div class="activityLine">
-  //                               <div class="activityInfo">
-  //                                   <h5>${doc.input_type}</h5>
-  //                                   <p>${doc.text}</p>
-  //                               </div>
-  //                               <p>${doc.amount}</p>
-  //                         </div>
-  //                         `;
-  //     dateSet.add(date); // Add the date to the Set to mark it as seen
-  //   }else{
-  //     dynamicHTML2 += `
-  //                         <div class="activityLine">
-  //                               <div class="activityInfo">
-  //                                   <h5>${doc.input_type}</h5>
-  //                                   <p>${doc.text}</p>
-  //                               </div>
-  //                               <p>${doc.amount}</p>
-  //                     </div>`;
-  //   }
-  // });
-  // //dynamicHTML2+= `<p style="margin-left: 5%;">${month} - ${tag}</p>`;
+  headerDom += '</div>';
+  
+                  
 
   //   ////////////////////////////////////////////////////////////////////////////////////////////////
   //   // Combine and sent to page
@@ -374,7 +579,7 @@ app.get('/', async (req, res) => {
   try {
     
     //Connect Syntax
-    const client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true });
+    const client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/");
     await client.connect();
     const database = client.db("CS266");
     const collection = database.collection("User");
@@ -406,8 +611,9 @@ const documents2 = await collection.aggregate([
 const incomeSum = (documents2.find(item => item._id === 'income') || {}).totalAmount || 0;
 const expenseSum = (documents2.find(item => item._id === 'expense') || {}).totalAmount || 0;
 
-console.log('Income Sum:', incomeSum);
-console.log('Expense Sum:', expenseSum);
+// console.log('Income Sum:', incomeSum);
+// console.log('Expense Sum:', expenseSum);
+
 
 
     // Query Syntax
@@ -420,7 +626,7 @@ console.log('Expense Sum:', expenseSum);
     ///////////////// END OF SET-UP   NOW ITS HTML BUILDING /////////////////////////////////////
 
     // Build dynamic HTML content For result1
-    let dynamicHTML = '<select name="tags" id="tags" class = "dropdown-el">';
+    let dynamicHTML = '<select name="tags" id="tags" class = "dropdown-el" >';
       dynamicHTML += `<option value="Other">Other</option>`;
     result.forEach(row => {
       dynamicHTML += `<option value="${row.tag}">${row.tag}</option>`;
@@ -428,7 +634,7 @@ console.log('Expense Sum:', expenseSum);
     });
     dynamicHTML += '</select>';
 
-    // Build dynamic HTML content For result2
+    // // Build dynamic HTML content For result2
 
     let dynamicHTML2 = '';
     result2.forEach(doc => {
@@ -441,10 +647,18 @@ console.log('Expense Sum:', expenseSum);
     finalHTML = finalHTML.replace('{income}',incomeSum);
     finalHTML = finalHTML.replace('{expense}',expenseSum);
     finalHTML = finalHTML.replace('{balance}',incomeSum-expenseSum);
+
+    // finalHTML = finalHTML.replace('{income}',responseData.incomeSum);
+    // finalHTML = finalHTML.replace('{expense}',responseData.expenseSum);
+    // finalHTML = finalHTML.replace('{balance}',responseData.incomeSum-responseData.expenseSum);
+
+
+   
     //.replace('<!-- INSERT_DYNAMIC_CONTENT_HERE2 -->', dynamicHTML2);
 
     // Send the response
     res.send(finalHTML);
+    // res.json(responseData);
 
   } catch (error) {
     console.error('Error:', error);
@@ -452,6 +666,63 @@ console.log('Expense Sum:', expenseSum);
     // Close the connection
     await client.close();
   }
+});
+
+app.get('/user/data', async(req,res)=>{
+  const client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true });
+  await client.connect();
+  const database = client.db("CS266");
+  const collection = database.collection("User");
+  const collectionTag = database.collection("Tag");
+
+  const documents2 = await collection.aggregate([
+    {
+      $group: {
+        _id: '$input_type', // Group by input_type field
+        totalAmount: { $sum: { $toInt: '$amount' } }// Sum the amount field
+      }
+    }
+  ]).toArray();
+  const incomeSum = (documents2.find(item => item._id === 'income') || {}).totalAmount || 0;
+  const expenseSum = (documents2.find(item => item._id === 'expense') || {}).totalAmount || 0;
+
+
+  const result = await collectionTag.find({}).toArray();
+  const result2 = await collection.find().toArray();
+
+
+  const responseData={
+    incomeSum: incomeSum,
+    expenseSum: expenseSum,
+    balance: incomeSum - expenseSum,
+    result: result,
+    result2: result2
+  };
+
+  console.log(responseData);
+  res.send(responseData);
+});
+
+
+app.get('/activity', async(req,res)=>{
+  const client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true });
+  await client.connect();
+  const database = client.db("CS266");
+  const collection = database.collection("User");
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set hours to midnight
+  // const todayDate = await collection.find({ date: { $gte: today } }).toArray();
+  
+  const todayDocument = await collection.findOne({
+    date: {
+      $gte: today
+    }
+    
+  });
+  res.json(todayDocument);
+  console.log(todayDocument);
+  // res.send(responseData2);
 });
 
 

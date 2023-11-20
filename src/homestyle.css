@@ -40,7 +40,7 @@ body.dark{
     --primary-color: #3a3b3c;
     --primary-color-light: #3a3b3c;
     --toggle-color: #fff;
-    --text-color: #ccc;
+    --text-color: #dddddd;
     --box1-color: #3A3B3C;
     --box2-color: #3A3B3C;
     --input-color:#ccc;
@@ -733,8 +733,6 @@ input[type=text] {
 #transaction:hover {
     width: 100px;
     height: 40px;
-    margin-left: 130px;
-    margin-top: 20px;
     border: none;
     border-radius: 6px;
     color: var(--text-color);
@@ -805,7 +803,7 @@ input[type=text] {
     cursor: pointer;
     text-align: left;
     white-space: nowrap;
-    color: #444;
+    color: var(--text-color);
     outline: none;
     border: 0.06em solid transparent;
     border-radius: 1em;
@@ -878,5 +876,143 @@ input[type=text] {
     transform: rotate(-180deg);
     top: 0.55em;
   }
+
+  .monthTitle {
+    margin-left: 7%;
+    font-size: larger;
+    font-size: 150%;
+}
+
+.titleContainer {
+    display: flex;
+    width: 80%;
+    margin-left: 7%;
+    margin-top: 5%;
+    justify-content: flex-start;
+    gap: 7%;
+}
+
+.titleBubble {
+    background-color: rgb(255, 255, 255);
+    padding: 3%;
+    width: 40%;
+    border-radius: 5px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+.titleBubble p1 {
+    font-size: 120%;
+}
+
+.titleBubble span {
+    font-size: 180%;
+    font-weight: 500;
+}
+
+.titleBubble i {
+    font-size: 170%;
+    padding: 2%;
+    padding-left: 4%;
+    padding-right: 4%;
+    border-radius: 50%;
+}
+
+.activity {
+    margin-top: 4%;
+    width: 80%;
+    margin-left: 7%;
+    display: block;
+    font-size: 120%;
+}
+
+.activityTitle {
+    font-size: larger;
+    font-size: 150%;
+}
+
+.dateTitle {
+    background-color: #7297a5;
+}
+
+.dateTitle p {
+    font-size: 120%;
+    margin-left: 1%;
+    color: white;
+}
+
+.activityIncome {
+    border-radius: 5px;
+    margin-top: 1%;
+}
+
+.activity-container {
+    background-color: white;
+    border-radius: 5px;
+
+}
+
+.activity-container p{
+    padding: 2%;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.dateUpper {
+    margin-top: 5%;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.act-header {
+    font-size: 100%;
+    font-weight: 500;
+}
+
+.act-lower {
+    font-size: 90%;
+}
+
+.activityInfo {
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+
+
+
+.activityLine {
+    display: flex;
+    justify-content: space-between;
+}
+
+.activityLine p{
+    padding: 2%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
+.activityHeader {
+    display: flex;
+    /* background-color: #7297a5; */
+    justify-content: space-between;
+    
+}
+
+.pageHeader {
+    font-size: 30px;
+    font-weight: 500;
+    margin-top: 1%;
+    margin-left: 7%;
+    margin-bottom: 1%;
+    color: var(--text-color);
+}
+
+.tags{
+    font-weight: 300;
+}
 
   
