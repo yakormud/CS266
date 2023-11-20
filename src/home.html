@@ -13,7 +13,11 @@
         <!----===== Iconscout CSS ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&family=Noto+Emoji:wght@300&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" /> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -59,32 +63,31 @@
                 </header>
                 
                 <div class="menu-bar">
-                    <div class="menu">
-                        <ul class="menu-links">
-                            <li class="nav-link">
-                                <a href="#">
-                                    <i class='bx bx-home-alt icon' ></i>
-                                    <span class="text nav-text">HOME</span>
-                                </a>
-                            </li>
+                  <div class="menu">
+                    <ul class="menu-links">
+                        <li class="nav-link">
+                            <a href="/">
+                                <i class='bx bx-home-alt icon'></i>
+                                <span class="text nav-text">HOME</span>
+                            </a>
+                        </li>
 
-                            <li class="nav-link">
-                              <a href="#">
-                                  <i class='bx bx-tag icon'></i>
-                                  <span class="text nav-text">TAG</span>
-                              </a>
-                          </li>
-                            
-                            <li class="nav-link">
-                                <a href="#">
-                                    <i class='bx bx-history icon'></i>
-                                    <span class="text nav-text">HISTORY</span>
-                                </a>
-                            </li>
+                        <li class="nav-link">
+                            <a href="tag">
+                                <i class='bx bx-tag icon'></i>
+                                <span class="text nav-text">TAG</span>
+                            </a>
+                        </li>
 
-                            
-                        </ul>
-                    </div>
+                        <li class="nav-link">
+                            <a href="history">
+                                <i class='bx bx-history icon'></i>
+                                <span class="text nav-text">HISTORY</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
 
                     <div class="bottom-content">
                         <!-- <li class="">
@@ -110,26 +113,31 @@
 
             <section class="home">
                
-                    <div class="text">Expense Tracker</div>
+                   
                 
                 <div class="center">
                     <div class="container-home">
+                      <div class="text">Expense Tracker</div>
                         <div class="title">
                             <i class="uil uil-bill"></i>
                             <span class="text" >Your Balance</span>
-                            <span class="text" id="balance">50,120</span>
+                            <span class="text" id="balance">{balance}</span>
+                            <!-- update balance -->
+                            <script>
+
+                            </script>
                         </div>
 
                         <div class="boxes">
                             <div class="box box1">
-                                <i class="uil uil-money-insert"></i>
+                                <i class="uil uil-money-bill"></i>
                                 <span class="text">Income</span>
-                                <span class="number" id="income">50,120</span>
+                                <span class="number" id="income">{income}</span>
                             </div>
                             <div class="box box2">
                                 <i class="uil uil-money-withdrawal"></i>
                                 <span class="text">Expense</span>
-                                <span class="number" id="expense">20,120</span>
+                                <span class="number" id="expense">{expense}</span>
                             </div>
                         </div>
 
@@ -165,27 +173,19 @@
                             <span class="text">INPUT</span>
                         </center>    
                            
-    
-                        <div class="ios13-segmented-control">
-                            <span class="selection"></span>
-                
+                        <div>
+                          <span class="selection"></span>
+                          <section id="pattern">
                             <div class="option">
-                                <input type="radio" id="inputType" name="sample" value="income" checked>
-                                <label for="inputType"><span>Income</span></label>
+                                <div class="option1"><input type="radio" id="incometype" name="sample" value="income" checked>
+                                <label class ="data-title" for="inputType"><span>Income</span></label></div>
+                                <div class="option2"><input type="radio" id="expensetype" name="sample" value="expense">
+                                <label class ="data-title" ,for="inputType"><span>Expense</span></label></div>
                             </div>
                 
-                            <div class="option">
-                                <input type="radio" id="inputType" name="sample" value="expense">
-                                <label for="inputType"><span>Expense</span></label>
-                            </div>
-                
+                          </section>
+                          
                             <script type="text/javascript">
-                                // Constants
-                              
-                                const SEGMENTED_CONTROL_BASE_SELECTOR = ".ios13-segmented-control";
-                                const SEGMENTED_CONTROL_INDIVIDUAL_SEGMENT_SELECTOR = ".ios13-segmented-control .option input";
-                                const SEGMENTED_CONTROL_BACKGROUND_PILL_SELECTOR = ".ios13-segmented-control .selection";
-                              
                               
                                 // Main
                               
@@ -289,35 +289,64 @@
                                     <div class="inputtag">
                                         <span class="data-title">Tag</span>
                                         
+                                        <div class="data-list">
                                         <!-- Drop down tags goes here -->
-                  
+                                        </div>
                                         <button type="button" id="add" i class="fa-solid fa-plus"></button>
                                         <script>
-                                            document.getElementById('add').addEventListener('click', async () => {
-                                              try {
-                                                const { value: inputValue } = await Swal.fire({
-                                                  title: 'Create New Tag',
-                                                  input: 'text',
-                                                  inputPlaceholder: 'Type your name tag here',
-                                                  inputAttributes: {
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                    const addButton = document.getElementById('add');
+
+                                    // Define submitForm function
+                                    function submitForm(inputValue) {
+                                        // ตัวอย่าง: ส่ง request ไปยัง server
+                                        fetch('/addtag', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({ tag: inputValue }),
+                                        })
+                                        .then(() => {
+                                            // Reload the page after the request is successful
+                                            location.reload();
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                        });
+                                    }
+
+                                    // Check if the event listener is already attached
+                                    if (!addButton.hasListener) {
+                                        addButton.hasListener = true;
+
+                                        addButton.addEventListener('click', function () {
+                                            Swal.fire({
+                                                title: 'Create New Tag',
+                                                input: 'text',
+                                                inputPlaceholder: 'Type your name tag here',
+                                                inputAttributes: {
                                                     'aria-label': 'Type your name tag',
                                                     'style': 'width: 85%; box-sizing: border-box;'
-                                                  },
-                                                  showCancelButton: true,
-                                                  inputValidator: (value) => {
+                                                },
+                                                showCancelButton: true,
+                                                inputValidator: (value) => {
                                                     if (!value) {
-                                                      return 'You need to write something!';
+                                                        return 'You need to write something!';
                                                     }
-                                                  }
-                                                });
-                                            
-                                                if (inputValue) {
-                                                  Swal.fire(`Input value: ${inputValue}`);
+                                                },
+                                                preConfirm: (inputValue) => {
+                                                    // Process the input value as needed
+                                                    submitForm(inputValue);
+                                                },
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    Swal.fire(`Input value: ${result.value}`);
                                                 }
-                                              } catch (error) {
-                                                console.error('Error displaying input:', error);
-                                              }
                                             });
+                                        });
+                                    }
+                                });
                                             </script>
                                     </div>
                                     <div class="inputtext">
@@ -331,8 +360,9 @@
 
                                 <script>
                                     function submitForm(event) {
+                                      const type = document.querySelector('input[name="sample"]:checked').value;
                                       const date = document.getElementById('selectedDate').innerText;
-                                      const type = document.getElementById('inputType').value;
+                                      // const type = document.getElementById('inputType').value;
                                       const amount = document.getElementById('tAmount').value;
                                       const tag = document.getElementById('tags').value;
                                       const memo = document.getElementById('tMemo').value;
@@ -365,6 +395,8 @@
                                       .then(response => response.json())
                                       .then(data => {
                                         console.log('Success:', data);
+                                        location.reload();
+                                      
                                         // You can handle success (e.g., show a success message)
                                       })
                                       .catch((error) => {

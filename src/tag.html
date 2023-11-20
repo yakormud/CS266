@@ -16,6 +16,9 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>  
+    
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
     <title>Tag</title>
@@ -42,21 +45,21 @@
                     <div class="menu">
                         <ul class="menu-links">
                             <li class="nav-link">
-                                <a href="#">
+                                <a href="/">
                                     <i class='bx bx-home-alt icon'></i>
                                     <span class="text nav-text">HOME</span>
                                 </a>
                             </li>
 
                             <li class="nav-link">
-                                <a href="#">
+                                <a href="tag">
                                     <i class='bx bx-tag icon'></i>
                                     <span class="text nav-text">TAG</span>
                                 </a>
                             </li>
 
                             <li class="nav-link">
-                                <a href="#">
+                                <a href="history">
                                     <i class='bx bx-history icon'></i>
                                     <span class="text nav-text">HISTORY</span>
                                 </a>
@@ -91,117 +94,145 @@
             <section class="home">
 
 
-
-
                 <div class="center">
                     <div class="container-home">
                         <div class="text">Tag</div>
-                        <div class="title">
-                            <i class="uil uil-money-insert"></i>
-                            <span class="text">Income</span>
-                            <span class="text" id="dailyIncome">50,120</span>
-
-                            
-                                <i class="uil uil-money-withdrawal"></i>
-                                <span class="text">Expense</span>
-                                <span class="text" id="dailyExpense">20,120</span>
-                            
-                        </div>
 
                         <div class="activity">
+                            <div class="title">
+                                <i class="uil uil-tag-alt"></i>
+                                <span class="text">All Tag</span>
+                                <div class="inputtag">
+                                    <button type="button" id="add" class="fa-solid fa-plus"></button>
+                                  </div>
+                                  
+                                      
 
-                            <!-- <div class="title">
-                                <i class="uil uil-clock-three"></i>
-                                <span class="text">Date</span>
-                            </div> -->
+                            </div>
 
                             <div class="activity-data">
-                                <div class="data-date">
-                                    <span class="data-title">Date</span>
-                                    <span class="data-list">17/11/2566</span>
-                                </div>
-                                <div class="boxes">
-                                    <div class="box box1">
-                                        <div class="data-income">
-                                            <span class="data-title">Income</span>
-                                            <span class="data-list">50,120</span>
-                                        </div>
-                                    </div>
+                                
+                                <ul id="data-list"></ul>
+                                <div class="data tag"></div>
 
+                                <!-- INSERT_DYNAMIC_CONTENT_HERE -->
 
-                                    <div class="box box2">
-                                        <div class="data-expense">
-                                            <span class="data-title">Expense</span>
-                                            <span class="data-list">20,120</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                    const addButton = document.getElementById('add');
 
-                        </div>
+                                    // Define submitForm function
+                                    function submitForm(inputValue) {
+                                        // ตัวอย่าง: ส่ง request ไปยัง server
+                                        fetch('/addtag', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({ tag: inputValue }),
+                                        })
+                                        .then(() => {
+                                            // Reload the page after the request is successful
+                                            location.reload();
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                        });
+                                    }
 
-                    </div>
-                    <!-- <div class="container-input">
-                        <div class="input-all-container">
-                            <div class="inputmonth">    
-                                    <input type="radio" name="monthSortType" value="January" checked="checked"id="sort-January"><label for="sort-January">January</label>
-                                    <input type="radio" name="monthSortType" value="February" id="sort-February"><label for="sort-February">February</label>
-                                    <input type="radio" name="monthSortType" value="March" id="sort-March"><label for="sort-March">March</label>
-                                    <input type="radio" name="monthSortType" value="April" id="sort-April"><label for="sort-April">April</label>
-                                    <input type="radio" name="monthSortType" value="May" id="sort-May"><label for="sort-May">May</label>
-                                    <input type="radio" name="monthSortType" value="June" id="sort-June"><label for="sort-June">June</label>
-                                    <input type="radio" name="monthSortType" value="July" id="sort-July"><label for="sort-July">July</label>
-                                    <input type="radio" name="monthSortType" value="August" id="sort-August"><label for="sort-August">August</label>
-                                    <input type="radio" name="monthSortType" value="September" id="sort-September"><label for="sort-September">September</label>
-                                    <input type="radio" name="monthSortType" value="October" id="sort-October"><label for="sort-October">October</label>
-                                    <input type="radio" name="monthSortType" value="November" id="sort-November"><label for="sort-November">November</label>
-                                    <input type="radio" name="monthSortType" value="December" id="sort-December"><label for="sort-December">December</label>   
-                            </div>
-                            <script>
-                                $('.inputmonth').click(function (e) {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    $(this).toggleClass('expanded');
-                                    $('#' + $(e.target).attr('for')).prop('checked', true);
+                                    // Check if the event listener is already attached
+                                    if (!addButton.hasListener) {
+                                        addButton.hasListener = true;
+
+                                        addButton.addEventListener('click', function () {
+                                            Swal.fire({
+                                                title: 'Create New Tag',
+                                                input: 'text',
+                                                inputPlaceholder: 'Type your name tag here',
+                                                inputAttributes: {
+                                                    'aria-label': 'Type your name tag',
+                                                    'style': 'width: 85%; box-sizing: border-box;'
+                                                },
+                                                showCancelButton: true,
+                                                inputValidator: (value) => {
+                                                    if (!value) {
+                                                        return 'You need to write something!';
+                                                    }
+                                                },
+                                                preConfirm: (inputValue) => {
+                                                    // Process the input value as needed
+                                                    submitForm(inputValue);
+                                                },
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    Swal.fire(`Input value: ${result.value}`);
+                                                }
+                                            });
+                                        });
+                                    }
                                 });
-                                $(document).click(function () {
-                                    $('.inputmonth').removeClass('expanded');
+
+
+                                document.addEventListener('click', function (event) {
+                                const clickedElement = event.target;
+
+                                // Check if the clicked element is a button with class "tag-button"
+                                if (clickedElement.classList.contains('tag-button')) {
+                                    const tagId = clickedElement.getAttribute('data-tag-id');
+                                    const targetButton = event.target.closest('.tag-button');
+                                    const tagValue = targetButton.textContent.trim();
+
+                                    Swal.fire({
+                                    title: "Delete tag",
+                                    text:`want to delete tag : ${tagValue}?`,
+                                    showDenyButton: true,
+                                    confirmButtonText: "Cancel",
+                                    denyButtonText: "Delete"
+                                    }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        Swal.fire("Changes are not saved", "", "info");
+                                    } else if (result.isDenied) {
+                                        // Perform the deletion in the database
+                                        deleteTag(tagId, tagValue);
+                                    }
+                                    });
+                                }
                                 });
-                            </script>
 
+                                function deleteTag(tagId, tagValue) {
+                                // Perform an AJAX request or use the Fetch API to send a request to delete the tag
+                                fetch(`/deleteTag/${tagId}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                    'Content-Type': 'application/json'
+                                    }
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                    // Handle the response from the server (you can show a success message or update the UI)
+                                    console.log(data);
+                                    Swal.fire(`Deleted! Tag : ${tagValue}`, "", "success").then(() => {
+                                            location.reload();
+                                        });
+                                    })
+                                    .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire("Error deleting tag", "", "error");
+                                    });
+                                }
 
-                            
-                            <div class="inputtag">
                                 
 
-                                <div class="dropdown-el">
-                                    <input type="radio" name="sortType" value="Food" checked="checked" id="sort-Food"><label for="sort-Food">Food</label>
-                                    <input type="radio" name="sortType" value="Transport" id="sort-Transport"><label for="sort-Transport">Transport</label>
-                                    <input type="radio" name="sortType" value="Travel" id="sort-Travel"><label for="sort-Travel">Travel</label>
-                                    <input type="radio" name="sortType" value="Other" id="sort-Other"><label for="sort-Other">Other</label>
-                                </div>
-                                <script>
-                                    $('.dropdown-el').click(function(e) {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    $(this).toggleClass('expanded');
-                                    $('#'+$(e.target).attr('for')).prop('checked',true);
-                                    });
-                                    $(document).click(function() {
-                                    $('.dropdown-el').removeClass('expanded');
-                                    });
                                 </script>
+
+                                
+                                
                             </div>
-                            
-                            <button type="button" id="search" i class="fa-regular fa-square-check"></button>
-                            
-                            
                         </div>
-                        
 
 
-                    </div> -->
-
+                    </div>
+                    
                 </div>
         </div>
         </section>

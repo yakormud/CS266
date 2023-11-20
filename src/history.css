@@ -816,4 +816,128 @@ input[type="date"] {
     align-items: center;
 }
 
+.monthTitle {
+    margin-left: 7%;
+    font-size: larger;
+    font-size: 150%;
+}
+
+.titleContainer {
+    display: flex;
+    width: 120%;
+    margin-left: 7%;
+    justify-content: flex-start;
+    gap: 7%;
+}
+
+.titleBubble {
+    background-color: rgb(255, 255, 255);
+    padding: 3%;
+    width: 40%;
+    border-radius: 5px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+.titleBubble p1 {
+    font-size: 120%;
+}
+
+.titleBubble span {
+    font-size: 180%;
+    font-weight: 500;
+}
+
+.titleBubble i {
+    font-size: 170%;
+    padding: 2%;
+    padding-left: 4%;
+    padding-right: 4%;
+    border-radius: 50%;
+}
+
+.activity {
+    margin-top: 4%;
+    width: 100%;
+    margin-left: 7%;
+    display: block;
+    font-size: 120%;
+}
+
+.activityTitle {
+    font-size: larger;
+    font-size: 150%;
+}
+
+.dateTitle {
+    background-color: #7297a5;
+}
+
+.dateTitle p {
+    font-size: 120%;
+    margin-left: 1%;
+    color: white;
+}
+
+.activityIncome {
+    border-radius: 5px;
+    margin-top: 1%;
+}
+
+.activityIncome h3{
+    margin-left: 2%;
+    margin-right: 2%;
+    /* color: white */
+}
+
+.activityLine {
+    display: flex;
+    justify-content: space-between;
+}
+
+.activityLine p{
+    padding: 2%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
+.activityHeader {
+    display: flex;
+    /* background-color: #7297a5; */
+    justify-content: space-between;
+    
+}
+
+.container-graph {
+    width: 25%;
+}
+
+.graphTitle {
+    font-size: 150%;
+    margin-top: 10%;
+    margin-left: 7%;
+}
+
+.graphContainer {
+    background-color: rgb(255, 255, 255);
+    padding: 3%;
+    width: 85%;
+    margin-left: 7%;
+    display: flex;
+    gap: 10%;
+}
+
+.activityInfo {
+    display: flex;
+    width: 70%;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+
+.activityInfo h5 {
+    margin-top: 1%;
+}
+
 
