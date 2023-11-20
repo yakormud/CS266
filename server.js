@@ -124,7 +124,7 @@ app.get('/transacData', async (req, res) => {
 
                     
                   }else{
-                    headerDom += '<center><h>Today Activity</h> <br></center>';
+                    headerDom += '<center><h><div class = "dateUpper">Today Activity</div></h> <br></center>';
                 
                     userHistory.forEach(row => {
                       
@@ -479,7 +479,7 @@ app.get('/history', async (req, res) => {
   if(userHistory.length < 0 ){
     headerDom += '<center><h>No Activity</h></center>';
   }else{
-    headerDom += '<center><h>Recent Activity</h> <br></center>';
+    headerDom += '<center><h><div class = "dateUpper">Recent Activity</div></h> <br></center>';
 
     userHistory.forEach(row => {
       if(!dateSet.has(row.date)){

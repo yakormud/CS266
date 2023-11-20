@@ -962,6 +962,7 @@ input[type=text] {
 .dateUpper {
     margin-top: 5%;
     font-weight: 600;
+    color: var(--text-color);
 }
 
 .act-header {
@@ -1006,6 +1007,8 @@ input[type=text] {
     margin-top: 1%;
     margin-left: 7%;
     margin-bottom: 1%;
+    font-weight: 600;
+    color: var(--text-color);
 }
 
   
