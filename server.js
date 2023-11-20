@@ -15,8 +15,105 @@ const PORT = 8080;
 //     res.send(html);
 //   });
 // });
+// 
+
+app.get('/historyData', async (req, res) => {
+  const staticHTML = fs.readFileSync('./src/history.html', 'utf8');
+  //console.log(month);
+  // ...
+
+  try {
+        
+    let { month, tag } = req.query;
+    //Connect Syntax
+    await client.connect();
+    const database = client.db("CS266");
+    const collection = database.collection("User");
+     const sumOfIncome = await collection.aggregate([
+      {
+        $match: {
+          "input_type": "income",
+          "date": { $regex: month }
+        }
+      },
+      {
+        $addFields: {
+          parsedAmount: { $toInt: "$amount" }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalIncome: { $sum: "$parsedAmount" }
+        }
+      }
+    ]).toArray();
+    const sumOfExpense = await collection.aggregate([
+      {
+        $match: {
+          "input_type": "expense",
+          "date": { $regex: month }
+        }
+      },
+      {
+        $addFields: {
+          parsedAmount: { $toInt: "$amount" }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalIncome: { $sum: "$parsedAmount" }
+        }
+      }
+    ]).toArray();
+    
+    // The result will be an array with a single document containing the totalIncome
+    const totalIncome = sumOfIncome.length > 0 ? sumOfIncome[0].totalIncome : 0;
+    const totalExpense = sumOfExpense.length > 0 ? sumOfExpense[0].totalIncome : 0;
+    console.log("TotalD Income:", totalIncome);
+    console.log("TotalD Expense:", totalExpense);
+    console.log("TotalD Revenue:", totalIncome-totalExpense);
+
+    if(month && tag){
+      let headerDom = `<div class="titleContainer">
+                    <div class="titleBubble">
+                        <p1>Total Revenue</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: gold;"></i>
+                        <span>${totalIncome-totalExpense}</span>
+
+                    </div>
+                    <div class="titleBubble">
+                        <p1>Income</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: greenyellow;"></i>
+                        <span>${totalIncome}</span>
+
+                    </div>
+                    <div class="titleBubble">
+                        <p1>Expense</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: rgb(255, 99, 99);"></i>
+                        <span>${totalExpense}</span>
+
+                    </div>
+                  </div>`;
+      res.send(headerDom);
+      return;
+    }
+
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    // Close the connection
+    await client.close();
+  }
+});
 
 app.get('/history', async (req, res) => {
+  const staticHTML = fs.readFileSync('./src/history.html', 'utf8');
+  //console.log(month);
   // ...
 
   try {
@@ -27,39 +124,198 @@ app.get('/history', async (req, res) => {
     const collection = database.collection("User");
     const collectionTag = database.collection("Tag");
 
-    // Query Syntax
-    const result = await collectionTag.find({}).toArray();
-    const result2 = await collection.find().toArray();
 
-    // Read the static HTML file
-    const staticHTML = fs.readFileSync('./src/history.html', 'utf8');
 
-    ///////////////// END OF SET-UP   NOW ITS HTML BUILDING /////////////////////////////////////
+     let { month, tag } = req.query;
+    if(month && tag){
+      let headerDom = `<div class="titleContainer">
+                    <div class="titleBubble">
+                        <p1>Total Revenue</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: gold;"></i>
+                        <span>${totalIncome-totalExpense}</span>
 
-    // Build dynamic HTML content For result1
-    let dynamicHTML = '<select name="tags" id="tags">';
-      dynamicHTML += `<option value="None">No tag select</option>`;
-      dynamicHTML += `<option value="Other">Other</option>`;
+                    </div>
+                    <div class="titleBubble">
+                        <p1>Income</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: greenyellow;"></i>
+                        <span>${totalIncome}</span>
+
+                    </div>
+                    <div class="titleBubble">
+                        <p1>Expense</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: rgb(255, 99, 99);"></i>
+                        <span>${totalExpense}</span>
+
+                    </div>
+                  </div>`;
+      res.send(headerDom);
+      return;
+    }
+    if(!month){
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+      month = `${currentYear}-${currentMonth}`;
+      //month = "2023-01";
+    }
+    if(!tag){
+      tag = "None";
+    }
+
+  //   // Query Syntax
+     const result = await collectionTag.find({}).toArray();
+     const sumOfIncome = await collection.aggregate([
+      {
+        $match: {
+          "input_type": "income",
+          "date": { $regex: month }
+        }
+      },
+      {
+        $addFields: {
+          parsedAmount: { $toInt: "$amount" }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalIncome: { $sum: "$parsedAmount" }
+        }
+      }
+    ]).toArray();
+    const sumOfExpense = await collection.aggregate([
+      {
+        $match: {
+          "input_type": "expense",
+          "date": { $regex: month }
+        }
+      },
+      {
+        $addFields: {
+          parsedAmount: { $toInt: "$amount" }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalIncome: { $sum: "$parsedAmount" }
+        }
+      }
+    ]).toArray();
+    
+    // The result will be an array with a single document containing the totalIncome
+    const totalIncome = sumOfIncome.length > 0 ? sumOfIncome[0].totalIncome : 0;
+    const totalExpense = sumOfExpense.length > 0 ? sumOfExpense[0].totalIncome : 0;
+    console.log("Total Income:", totalIncome);
+    console.log("Total Expense:", totalExpense);
+    console.log("Total Revenue:", totalIncome-totalExpense);
+
+
+  //   ///////////////// END OF SET-UP   NOW ITS HTML BUILDING /////////////////////////////////////
+
+  //   // FOR TAG
+    let tagDom = '<select name="tags" id="tags">';
+      tagDom += `<option value="None">No tag select</option>`;
+      tagDom += `<option value="Other">Other</option>`;
     result.forEach(row => {
-      dynamicHTML += `<option value="${row.tag}">${row.tag}</option>`;
+      tagDom += `<option value="${row.tag}">${row.tag}</option>`;
       //dynamicHTML += `<div>${doc.date}</div>`; 
     });
-    dynamicHTML += '</select>';
+    tagDom += '</select>';
 
-    // Build dynamic HTML content For result2
+  // FOR RESULT HEADER
+    
+  let headerDom = `<div class="titleContainer">
+                    <div class="titleBubble">
+                        <p1>Total Revenue</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: gold;"></i>
+                        <span>${totalIncome-totalExpense}</span>
 
-    let dynamicHTML2 = '';
-    result2.forEach(doc => {
-      dynamicHTML2 += `<div>${doc.tag}</div>`; 
-    });
+                    </div>
+                    <div class="titleBubble">
+                        <p1>Income</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: greenyellow;"></i>
+                        <span>${totalIncome}</span>
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // Combine and sent to page
-    const finalHTML = staticHTML.replace('<!-- Drop down tags goes here -->', dynamicHTML)
-    //.replace('<!-- INSERT_DYNAMIC_CONTENT_HERE2 -->', dynamicHTML2);
+                    </div>
+                    <div class="titleBubble">
+                        <p1>Expense</p1>
+                        <br>
+                        <i class="uil uil-money-insert" style="background-color: rgb(255, 99, 99);"></i>
+                        <span>${totalExpense}</span>
+
+                    </div>
+                  </div>`;
+  //   let dateSet = new Set(); // Use a Set to keep track of unique dates
+  //   let dynamicHTML2 = '';
+  //   dynamicHTML2 += `<div class="titleBubble">
+  //                         <p1>Total Revenue</p1>
+  //                         <br>
+  //                         <i class="uil uil-money-insert" style="background-color: gold;"></i>
+  //                         <span>12830</span>
+
+  //                     </div>
+  //                     <div class="titleBubble">
+  //                         <p1>Income</p1>
+  //                         <br>
+  //                         <i class="uil uil-money-insert" style="background-color: greenyellow;"></i>
+  //                         <span>19380</span>
+
+  //                     </div>
+  //                     <div class="titleBubble">
+  //                         <p1>Expense</p1>
+  //                         <br>
+  //                         <i class="uil uil-money-insert" style="background-color: rgb(255, 99, 99);"></i>
+  //                         <span>6570</span>
+
+  //                     </div>
+  //                     </div>
+  //                   <div class="activity">`;
+
+  // result2.forEach(doc => {
+  //   const date = doc.date;
+
+  //   // Check if the date is not already in the Set
+  //   if (!dateSet.has(date)) {
+  //     dynamicHTML2 += `<div class="dateTitle" id="dateTitle">
+  //                         <p style="margin-left: 5%;">${date}</p>
+  //                       </div>`;
+
+  //     dynamicHTML2 += `<div class="activityIncome">
+  //                         <div class="activityLine">
+  //                               <div class="activityInfo">
+  //                                   <h5>${doc.input_type}</h5>
+  //                                   <p>${doc.text}</p>
+  //                               </div>
+  //                               <p>${doc.amount}</p>
+  //                         </div>
+  //                         `;
+  //     dateSet.add(date); // Add the date to the Set to mark it as seen
+  //   }else{
+  //     dynamicHTML2 += `
+  //                         <div class="activityLine">
+  //                               <div class="activityInfo">
+  //                                   <h5>${doc.input_type}</h5>
+  //                                   <p>${doc.text}</p>
+  //                               </div>
+  //                               <p>${doc.amount}</p>
+  //                     </div>`;
+  //   }
+  // });
+  // //dynamicHTML2+= `<p style="margin-left: 5%;">${month} - ${tag}</p>`;
+
+  //   ////////////////////////////////////////////////////////////////////////////////////////////////
+  //   // Combine and sent to page
+  const finalHTML = staticHTML.replace('<!-- Drop down tags goes here -->', tagDom)
+  .replace('<!-- ACTIVITY -->', headerDom);
 
     // Send the response
-    res.send(finalHTML);
+  res.send(finalHTML);
 
   } catch (error) {
     console.error('Error:', error);
