@@ -150,8 +150,9 @@ const documents2 = await collection.aggregate([
 const incomeSum = (documents2.find(item => item._id === 'income') || {}).totalAmount || 0;
 const expenseSum = (documents2.find(item => item._id === 'expense') || {}).totalAmount || 0;
 
-console.log('Income Sum:', incomeSum);
-console.log('Expense Sum:', expenseSum);
+// console.log('Income Sum:', incomeSum);
+// console.log('Expense Sum:', expenseSum);
+
 
 
     // Query Syntax
@@ -172,7 +173,7 @@ console.log('Expense Sum:', expenseSum);
     });
     dynamicHTML += '</select>';
 
-    // Build dynamic HTML content For result2
+    // // Build dynamic HTML content For result2
 
     let dynamicHTML2 = '';
     result2.forEach(doc => {
@@ -185,10 +186,18 @@ console.log('Expense Sum:', expenseSum);
     finalHTML = finalHTML.replace('{income}',incomeSum);
     finalHTML = finalHTML.replace('{expense}',expenseSum);
     finalHTML = finalHTML.replace('{balance}',incomeSum-expenseSum);
+
+    // finalHTML = finalHTML.replace('{income}',responseData.incomeSum);
+    // finalHTML = finalHTML.replace('{expense}',responseData.expenseSum);
+    // finalHTML = finalHTML.replace('{balance}',responseData.incomeSum-responseData.expenseSum);
+
+
+   
     //.replace('<!-- INSERT_DYNAMIC_CONTENT_HERE2 -->', dynamicHTML2);
 
     // Send the response
     res.send(finalHTML);
+    // res.json(responseData);
 
   } catch (error) {
     console.error('Error:', error);
@@ -196,6 +205,63 @@ console.log('Expense Sum:', expenseSum);
     // Close the connection
     await client.close();
   }
+});
+
+app.get('/user/data', async(req,res)=>{
+  const client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true });
+  await client.connect();
+  const database = client.db("CS266");
+  const collection = database.collection("User");
+  const collectionTag = database.collection("Tag");
+
+  const documents2 = await collection.aggregate([
+    {
+      $group: {
+        _id: '$input_type', // Group by input_type field
+        totalAmount: { $sum: { $toInt: '$amount' } }// Sum the amount field
+      }
+    }
+  ]).toArray();
+  const incomeSum = (documents2.find(item => item._id === 'income') || {}).totalAmount || 0;
+  const expenseSum = (documents2.find(item => item._id === 'expense') || {}).totalAmount || 0;
+
+
+  const result = await collectionTag.find({}).toArray();
+  const result2 = await collection.find().toArray();
+
+
+  const responseData={
+    incomeSum: incomeSum,
+    expenseSum: expenseSum,
+    balance: incomeSum - expenseSum,
+    result: result,
+    result2: result2
+  };
+
+  console.log(responseData);
+  res.send(responseData);
+});
+
+
+app.get('/activity', async(req,res)=>{
+  const client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true });
+  await client.connect();
+  const database = client.db("CS266");
+  const collection = database.collection("User");
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set hours to midnight
+  // const todayDate = await collection.find({ date: { $gte: today } }).toArray();
+  
+  const todayDocument = await collection.findOne({
+    date: {
+      $gte: today
+    }
+    
+  });
+  res.json(todayDocument);
+  console.log(todayDocument);
+  // res.send(responseData2);
 });
 
 

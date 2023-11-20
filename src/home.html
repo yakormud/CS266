@@ -141,6 +141,22 @@
                             </div>
                         </div>
 
+                        <script>
+                          // Fetch JSON data from the server
+                          fetch('/user/data')
+                            .then(response => response.json())
+                            .then(jsonData => {
+                              // Update the HTML content with the received JSON data
+                              document.getElementById('income').textContent = jsonData.incomeSum;
+                              document.getElementById('expense').textContent = jsonData.expenseSum;
+                              document.getElementById('balance').textContent = jsonData.balance;
+                              console.log('hi');
+                            })
+                            .catch(error => {
+                              console.error('Error fetching JSON:', error);
+                            });
+                        </script>
+
                         <div class="activity">
                             <div class="title">
                                 <i class="uil uil-clock-three"></i>
@@ -395,15 +411,42 @@
                                       .then(response => response.json())
                                       .then(data => {
                                         console.log('Success:', data);
+                                        // // Fetch JSON data from the server
+                                        //   fetch('/user/data')
+                                        //     .then(response => response.json())
+                                        //     .then(jsonData => {
+                                        //       // Update the HTML content with the received JSON data
+                                        //       document.getElementById('income').textContent = jsonData.incomeSum;
+                                        //       document.getElementById('expense').textContent = jsonData.expenseSum;
+                                        //       document.getElementById('balance').textContent = jsonData.balance;
+                                        //       console.log('hi');
+                                        //     })
+                                        //     .catch(error => {
+                                        //       console.error('Error fetching JSON:', error);
+                                        //     });
                                         location.reload();
                                       
                                         // You can handle success (e.g., show a success message)
                                       })
+
                                       .catch((error) => {
                                         //console.error('Error:', error);
                                         // Handle errors (e.g., show an error message)
                                       });
                                     }
+                                    // function fetchData() {
+                                    //   fetch('/')
+                                    //     .then(response => response.json())
+                                    //     .then(data => {
+                                    //       // Process the data
+                                    //       displayData(data);
+                                    //     })
+                                    //     .catch(error => {
+                                    //       // Handle errors
+                                    //       console.error('Error:', error);
+                                    //     });
+                                    // }
+                                    
                                   </script>
                             </div>
 
