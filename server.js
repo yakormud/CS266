@@ -273,13 +273,13 @@ app.get('/historyData', async (req, res) => {
                 
                   if(userHistory.length <= 0 ){
                     if(tag != "None"){
-                      headerDom += '<center><h>No Activity match "'+ tag +'"</h></center>';
+                      headerDom += '<center><div class = "dateUpper">No Activity match "'+ tag +'"</div></center>';
                     }else{
-                      headerDom += '<center><h>No Activity</h></center>';
+                      headerDom += '<center><div class = "dateUpper">No Activity</div></center>';
                     }
                     
                   }else{
-                    headerDom += '<center><h>Recent Activity</h> <br></center>';
+                    headerDom += '<center><div class = "dateUpper">Recent Activity</div> <br></center>';
                 
                     userHistory.forEach(row => {
                       if(!dateSet.has(row.date)){
