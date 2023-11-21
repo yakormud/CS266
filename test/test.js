@@ -2,8 +2,7 @@ const chai = require('chai');
 const expect = chai.expect;
 const { isValidDate, changeDate, submitDate } = require('../src/addDate'); // Import your functions
 
-
-describe('isValidDate', () => {
+describe('Unit test: isValidDate', () => {
   it('should return false for a date in the future', () => {
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + 1); // One day in the future
