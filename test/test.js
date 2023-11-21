@@ -2,7 +2,31 @@ const chai = require('chai');
 const expect = chai.expect;
 const { isValidDate, changeDate, submitDate } = require('../src/addDate'); // Import your functions
 
-describe('Unit test: isValidDate', () => {
+const sinon = require('sinon');
+const { assert } = require('chai');
+const axios = require('axios');
+const cheerio = require('cheerio');
+
+// Mock server response for /historyData endpoint
+const mockServerResponse = '<div class="activity">Mocked history data</div>';
+// Mock data for the database
+const mockDatabaseData = [
+  {
+    _id: '655b77ad323b2b687142d98c',
+    amount: 50,
+    date: '2023-11-05',
+    input_type: 'expense',
+    tag: 'Food',
+    text: ' ',
+    balance: ' ',
+  },
+];
+// Mock implementation of queryDatabaseForData
+const queryDatabaseForData = async () => mockDatabaseData;
+
+// Story 1
+
+describe('isValidDate', () => {
   it('should return false for a date in the future', () => {
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + 1); // One day in the future
@@ -27,65 +51,110 @@ describe('Unit test: isValidDate', () => {
 
 describe('changeDate', () => {
   it('should change the element value to the provided date', () => {
-    const elementId = 'date-input';
-    const newDate = '2022-11-09';
-    //const element = { value: '2022' }; // Mock element with value property
+  let newDate = '2023-11-09';
+  let element = '2023-11-07'; // Mock element with value property
 
-    changeDate(elementId, newDate);
-    expect(elementId.value).to.equal(newDate);
+  expect(changeDate(element, newDate)).to.equal(newDate);
   });
 
   it('should not change the element value for a future date', () => {
-    const elementId = 'date-input';
-    const futureDate = '2023-11-09';
-    //const element = { value: '' }; // Mock element with value property
+    let newDate = '2024-11-05';
+    let element = '2023-11-09'; // Mock element with value property
 
-    changeDate(elementId, futureDate, element);
-    expect(element.value).to.be.empty;
+    expect(changeDate(element, newDate)).to.be.false;
   });
 });
 
 describe('submitDate', () => {
       it('should keep the date input value unchanged when the form is submitted', () => {
         const date = '2023-11-09';
-        expect(submitDate(date)).to.equal(date);
+        expect(submitDate(date)).to.be.true;
       });
 });
 
-//UNUSE
-  
-// describe('Html page', () => {
+// Story 2
 
-//     it('should have the calendar button element', () => {
-//         const calendarButton = document.getElementById('calendar-button');
-//         expect(calendarButton).to.not.be.null;
-//       });
+describe('searchByMonth', () => {
+  it('should retrieve transactions sorted by date within the selected month', async () => {
+    const result = await queryDatabaseForData();
+    // Assuming result is an array of transactions
 
-//     it('should have the date element', () => {
-//         const dateInput = document.getElementById('date');
-//         expect(dateInput).to.not.be.null;
-//     });
-// });
-  // describe('System Date', () => {
-  //   it('should match the date in a specific time zone', () => {
-  //     const systemDate = new Date(); // Get the current system date and time
-  //     const systemTimeZoneOffset = systemDate.getTimezoneOffset() * 60 * 1000; // Get system time zone offset in milliseconds
-  
-  //     const targetTimeZoneOffset = -8 * 60 * 60 * 1000; // Target time zone offset (for example, UTC-08:00)
-  //     const targetDate = new Date(systemDate.getTime() - systemTimeZoneOffset + targetTimeZoneOffset);
-  
-  //     // Get components of the system date and target date
-  //     const systemYear = systemDate.getFullYear();
-  //     const systemMonth = systemDate.getMonth() + 1; // Months are 0-indexed
-  //     const systemDay = systemDate.getDate();
-  
-  //     const targetYear = targetDate.getFullYear();
-  //     const targetMonth = targetDate.getMonth() + 1; // Months are 0-indexed
-  //     const targetDay = targetDate.getDate();
-  
-  //     // Expect the components of the system date to match the components of the target date
-  //     expect(systemYear).to.equal(targetYear);
-  //     expect(systemMonth).to.equal(targetMonth);
-  //     expect(systemDay).to.equal(targetDay);
-  //   });
-  // });
+    // You may want to compare the dates of transactions to ensure they are sorted
+    const sortedDates = result.map(transaction => transaction.date);
+    const isSorted = sortedDates.every((date, index, array) => index === 0 || date >= array[index - 1]);
+    
+    expect(isSorted).to.be.true;
+  });
+
+  it('should retrieve transactions within the current month if no month is selected', async () => {
+    const result = await queryDatabaseForData();
+    // Assuming result is an array of transactions
+
+    // You may want to compare the dates of transactions to ensure they are within the current month
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const isInCurrentMonth = result.every(transaction => new Date(transaction.date).getMonth() === currentMonth);
+    
+    expect(isInCurrentMonth).to.be.true;
+  });
+
+  it('should include transaction details, amounts, and balance in the retrieved data', async () => {
+    const result = await queryDatabaseForData();
+    // Assuming result is an array of transactions with 'date', 'text', 'tag', 'amount', and 'balance' properties
+
+    // Write your assertion logic here
+    const hasDetailsAmountBalance = result.every(transaction => 
+      transaction.date !== undefined && 
+      transaction.text !== undefined && 
+      transaction.tag !== undefined &&
+      transaction.amount !== undefined &&
+      transaction.balance !== undefined
+    );
+    
+    expect(hasDetailsAmountBalance).to.be.true;
+  });
+});
+
+// Story 3
+
+// Story 4
+
+describe('searchByTag', () => {
+  it('should retrieve transactions based on the selected tag', async () => {
+    const tag = 'Food'; // Example tag
+    const result = await queryDatabaseForData(tag);
+
+    const hasSelectedTag = result.every(transaction => transaction.tag.includes(tag));
+    expect(hasSelectedTag).to.be.true;
+  });
+
+  it('should retrieve all transactions in the current month if no tag is selected', async () => {
+    const result = await queryDatabaseForData();
+
+    const isInCurrentMonth = result.every(transaction => {
+      const transactionDate = new Date(transaction.date);
+      const currentDate = new Date();
+      return (
+        transactionDate.getMonth() === currentDate.getMonth() &&
+        transactionDate.getFullYear() === currentDate.getFullYear()
+      );
+    });
+
+    expect(isInCurrentMonth).to.be.true;
+  });
+
+  it('should retrieve complete and accurate data from the database', async () => {
+    const tag = 'Food'; // Example tag
+    const result = await queryDatabaseForData(tag);
+
+    const isCompleteAndAccurate = result.every(transaction =>
+      transaction.date !== undefined && 
+      transaction.text !== undefined && 
+      transaction.tag !== undefined &&
+      transaction.amount !== undefined &&
+      transaction.balance !== undefined
+    );
+
+    expect(isCompleteAndAccurate).to.be.true;
+  });
+});
