@@ -40,28 +40,29 @@
 
                 <div class="menu-bar">
                     <div class="menu">
-                        <ul class="menu-links">
-                                <a href="/">
-                                    <i class='bx bx-home-alt icon'></i>
-                                    <span class="text nav-text">HOME</span>
-                                </a>
-                            </li>
-                            
-                            <li class="nav-link">
-                                <a href="tag">
-                                    <i class='bx bx-tag icon'></i>
-                                    <span class="text nav-text">TAG</span>
-                                </a>
-                            </li>
 
-                            <li class="nav-link">
-                                <a href="history">
-                                    <i class='bx bx-history icon'></i>
-                                    <span class="text nav-text">HISTORY</span>
-                                </a>
-                            </li>
+                        <li class="nav-link">
+                            <a href="/">
+                                <i class='bx bx-home-alt icon'></i>
+                                <span class="text nav-text">HOME</span>
+                            </a>
+                        </li>
 
-                            
+                        <li class="nav-link">
+                            <a href="tag">
+                                <i class='bx bx-tag icon'></i>
+                                <span class="text nav-text">TAG</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-link">
+                            <a href="history">
+                                <i class='bx bx-history icon'></i>
+                                <span class="text nav-text">HISTORY</span>
+                            </a>
+                        </li>
+
+
                         </ul>
                     </div>
 
@@ -101,97 +102,97 @@
                                 </select>
                                 <!-- Drop down tags goes here -->
                             </div>
-                            
+
                         </div>
                         <div id="activity">
                             <!-- ACTIVITY -->
 
-                         <div class="activity">  
+                            <div class="activity">
 
+                            </div>
                         </div>
-                    </div>
 
                     </div>
 
-                    
 
-                        <script>
-                            // Function to get the month name
-                            function getMonthName(monthIndex) {
-                                const months = [
-                                    "January", "February", "March", "April", "May", "June",
-                                    "July", "August", "September", "October", "November", "December"
-                                ];
-                                return months[monthIndex];
-                            }
-                    
-                            // Function to populate the select element with months
-                            function populateMonths() {
-                                const monthSelect = document.getElementById("month");
-                    
-                                // Get the current date
-                                const currentDate = new Date();
-                                let temp = currentDate.getMonth();
-                    
-                                // Loop to add the last 12 months to the select options
-                                for (let i = 0; i < 12; i++) {
-                                    const monthIndex = (currentDate.getMonth() - i + 12) % 12;
-                                    let year = currentDate.getFullYear();
 
-                                    if(currentDate.getMonth() < monthIndex){
-                                        year = currentDate.getFullYear()-1;
-                                    }
-                    
-                                    const optionText = getMonthName(monthIndex) + ' ' + year;
-                                    const optionValue = `${year}-${(monthIndex + 1).toString().padStart(2, '0')}`;
-                    
-                                    // Create and append the option element
-                                    const option = document.createElement("option");
-                                    option.value = optionValue;
-                                    option.text = optionText;
-                    
-                                    monthSelect.add(option);
+                    <script>
+                        // Function to get the month name
+                        function getMonthName(monthIndex) {
+                            const months = [
+                                "January", "February", "March", "April", "May", "June",
+                                "July", "August", "September", "October", "November", "December"
+                            ];
+                            return months[monthIndex];
+                        }
+
+                        // Function to populate the select element with months
+                        function populateMonths() {
+                            const monthSelect = document.getElementById("month");
+
+                            // Get the current date
+                            const currentDate = new Date();
+                            let temp = currentDate.getMonth();
+
+                            // Loop to add the last 12 months to the select options
+                            for (let i = 0; i < 12; i++) {
+                                const monthIndex = (currentDate.getMonth() - i + 12) % 12;
+                                let year = currentDate.getFullYear();
+
+                                if (currentDate.getMonth() < monthIndex) {
+                                    year = currentDate.getFullYear() - 1;
                                 }
+
+                                const optionText = getMonthName(monthIndex) + ' ' + year;
+                                const optionValue = `${year}-${(monthIndex + 1).toString().padStart(2, '0')}`;
+
+                                // Create and append the option element
+                                const option = document.createElement("option");
+                                option.value = optionValue;
+                                option.text = optionText;
+
+                                monthSelect.add(option);
                             }
-                    
-                            // Call the function to populate the select elements
-                            populateMonths();
+                        }
 
-                            document.getElementById("month").addEventListener("change", function () {
-                                const month = document.getElementById("month").value;
-                                const tag = document.getElementById("tags").value;
-                                console.log(this.value);
-                                // Fetch /history with the selected date as a query parameter
-                                fetch(`/historyData?month=${month}&&tag=${tag}`)
-                                    .then(response => response.text())
-                                    .then(html => {
+                        // Call the function to populate the select elements
+                        populateMonths();
+
+                        document.getElementById("month").addEventListener("change", function () {
+                            const month = document.getElementById("month").value;
+                            const tag = document.getElementById("tags").value;
+                            console.log(this.value);
+                            // Fetch /history with the selected date as a query parameter
+                            fetch(`/historyData?month=${month}&&tag=${tag}`)
+                                .then(response => response.text())
+                                .then(html => {
                                     // Update the content of the history container
                                     document.getElementById('activity').innerHTML = html;
-                                    })
-                                    .catch(error => console.error('Error fetching /history:', error));
-                            });
-                            document.getElementById("tags").addEventListener("change", function () {
-                                console.log(this.value);
-                            });
+                                })
+                                .catch(error => console.error('Error fetching /history:', error));
+                        });
+                        document.getElementById("tags").addEventListener("change", function () {
+                            console.log(this.value);
+                        });
 
-                            document.getElementById("tags").addEventListener("change", function () {
-                                const month = document.getElementById("month").value;
-                                const tag = document.getElementById("tags").value;
-                                console.log(this.value);
-                                // Fetch /history with the selected date as a query parameter
-                                fetch(`/historyData?month=${month}&&tag=${tag}`)
-                                    .then(response => response.text())
-                                    .then(html => {
+                        document.getElementById("tags").addEventListener("change", function () {
+                            const month = document.getElementById("month").value;
+                            const tag = document.getElementById("tags").value;
+                            console.log(this.value);
+                            // Fetch /history with the selected date as a query parameter
+                            fetch(`/historyData?month=${month}&&tag=${tag}`)
+                                .then(response => response.text())
+                                .then(html => {
                                     // Update the content of the history container
                                     document.getElementById('activity').innerHTML = html;
-                                    })
-                                    .catch(error => console.error('Error fetching /history:', error));
-                            });
-                            document.getElementById("tags").addEventListener("change", function () {
-                                console.log(this.value);
-                            });
-                        </script>
-                    
+                                })
+                                .catch(error => console.error('Error fetching /history:', error));
+                        });
+                        document.getElementById("tags").addEventListener("change", function () {
+                            console.log(this.value);
+                        });
+                    </script>
+
 
 
                 </div>
