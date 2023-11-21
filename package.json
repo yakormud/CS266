@@ -15,8 +15,11 @@
     "coverage": "^0.4.1",
     "express": "^4.18.2",
     "http-server": "^14.1.1",
+    "supertest": "^6.3.3",
+    "mocha": "^10.2.0",
     "mongodb": "^6.3.0",
-    "supertest": "^6.3.3"
+    "php": "^1.0.2",
+    "socket.io": "^4.7.2"
   },
   "devDependencies": {
     "axios": "^1.6.2",
