@@ -81,7 +81,7 @@ app.get('/transacData', async (req, res) => {
                        </div>
                     <div class="titleContainer">
                     <div class="titleBubble">
-                        <p1>Total Revenue</p1>
+                        <p1>Balance</p1>
                         <br>
                         <i class="uil uil-money-insert" style="background-color: gold;"></i>
                         <span>${totalIncome-totalExpense}</span>
@@ -228,7 +228,7 @@ app.get('/historyData', async (req, res) => {
     if(month && tag){
       let headerDom = `<div class="titleContainer">
                     <div class="titleBubble">
-                        <p1>Total Revenue</p1>
+                        <p1>Balance</p1>
                         <br>
                         <i class="uil uil-money-insert" style="background-color: gold;"></i>
                         <span>${totalIncome-totalExpense}</span>
@@ -273,13 +273,13 @@ app.get('/historyData', async (req, res) => {
                 
                   if(userHistory.length <= 0 ){
                     if(tag != "None"){
-                      headerDom += '<center><h>No Activity match "'+ tag +'"</h></center>';
+                      headerDom += '<center><div class = "dateUpper">No Activity match "'+ tag +'"</div></center>';
                     }else{
-                      headerDom += '<center><h>No Activity</h></center>';
+                      headerDom += '<center><div class = "dateUpper">No Activity</div></center>';
                     }
                     
                   }else{
-                    headerDom += '<center><h>Recent Activity</h> <br></center>';
+                    headerDom += '<center><div class = "dateUpper">Recent Activity</div> <br></center>';
                 
                     userHistory.forEach(row => {
                       if(!dateSet.has(row.date)){
@@ -342,7 +342,7 @@ app.get('/history', async (req, res) => {
     if(month && tag){
       let headerDom = `<div class="titleContainer">
                     <div class="titleBubble">
-                        <p1>Total Revenue</p1>
+                        <p1>Balance</p1>
                         <br>
                         <i class="uil uil-money-insert" style="background-color: gold;"></i>
                         <span>${totalIncome-totalExpense}</span>
@@ -442,7 +442,7 @@ app.get('/history', async (req, res) => {
     
   let headerDom = `<div class="titleContainer">
                     <div class="titleBubble">
-                        <p1>Total Revenue</p1>
+                        <p1>Balance</p1>
                         <br>
                         <i class="uil uil-money-insert" style="background-color: gold;"></i>
                         <span>${totalIncome-totalExpense}</span>
