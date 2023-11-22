@@ -1,6 +1,6 @@
 const chai = require('chai');
 const expect = chai.expect;
-const { isValidDate, changeDate, submitDate } = require('../src/addDate'); // Import your functions
+const { isValidDate, changeDate, submitDate, mockDatabaseData, addTag, removeTag } = require('../src/addDate'); // Import your functions
 
 const sinon = require('sinon');
 const { assert } = require('chai');
@@ -9,20 +9,14 @@ const cheerio = require('cheerio');
 
 // Mock server response for /historyData endpoint
 const mockServerResponse = '<div class="activity">Mocked history data</div>';
-// Mock data for the database
-const mockDatabaseData = [
-  {
-    _id: '655b77ad323b2b687142d98c',
-    amount: 50,
-    date: '2023-11-05',
-    input_type: 'expense',
-    tag: 'Food',
-    text: ' ',
-    balance: ' ',
-  },
-];
+
 // Mock implementation of queryDatabaseForData
-const queryDatabaseForData = async () => mockDatabaseData;
+const queryDatabaseForData = async (tag) => {
+  // นำทุก transaction ที่มี tag ตรงกับที่ user เลือกค้นหา
+  const result = mockDatabaseData.filter(transaction => transaction.tag === tag);
+
+  return result;
+};
 
 // Story 1
 
@@ -51,10 +45,10 @@ describe('isValidDate', () => {
 
 describe('changeDate', () => {
   it('should change the element value to the provided date', () => {
-  let newDate = '2023-11-09';
-  let element = '2023-11-07'; // Mock element with value property
+    let newDate = '2023-11-09';
+    let element = '2023-11-07'; // Mock element with value property
 
-  expect(changeDate(element, newDate)).to.equal(newDate);
+    expect(changeDate(element, newDate)).to.equal(newDate);
   });
 
   it('should not change the element value for a future date', () => {
@@ -66,10 +60,10 @@ describe('changeDate', () => {
 });
 
 describe('submitDate', () => {
-      it('should keep the date input value unchanged when the form is submitted', () => {
-        const date = '2023-11-09';
-        expect(submitDate(date)).to.be.true;
-      });
+  it('should keep the date input value unchanged when the form is submitted', () => {
+    const date = '2023-11-09';
+    expect(submitDate(date)).to.be.true;
+  });
 });
 
 // Story 2
@@ -78,11 +72,11 @@ describe('searchByMonth', () => {
   it('should retrieve transactions sorted by date within the selected month', async () => {
     const result = await queryDatabaseForData();
     // Assuming result is an array of transactions
-
+    
     // You may want to compare the dates of transactions to ensure they are sorted
     const sortedDates = result.map(transaction => transaction.date);
     const isSorted = sortedDates.every((date, index, array) => index === 0 || date >= array[index - 1]);
-    
+
     expect(isSorted).to.be.true;
   });
 
@@ -94,7 +88,7 @@ describe('searchByMonth', () => {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
     const isInCurrentMonth = result.every(transaction => new Date(transaction.date).getMonth() === currentMonth);
-    
+
     expect(isInCurrentMonth).to.be.true;
   });
 
@@ -103,19 +97,70 @@ describe('searchByMonth', () => {
     // Assuming result is an array of transactions with 'date', 'text', 'tag', 'amount', and 'balance' properties
 
     // Write your assertion logic here
-    const hasDetailsAmountBalance = result.every(transaction => 
-      transaction.date !== undefined && 
-      transaction.text !== undefined && 
+    const hasDetailsAmountBalance = result.every(transaction =>
+      transaction.date !== undefined &&
+      transaction.text !== undefined &&
       transaction.tag !== undefined &&
       transaction.amount !== undefined &&
       transaction.balance !== undefined
     );
-    
+
     expect(hasDetailsAmountBalance).to.be.true;
   });
 });
 
 // Story 3
+
+describe('Add / Remove / Save Tag', () => {
+  it('should add a tag to the database', () => {
+    const initialLength = mockDatabaseData.length;
+    const newTag = 'Netflix';
+
+    // เพิ่ม tag เข้าไปใน database
+    addTag(newTag);
+
+    // ตรวจสอบว่า tag ถูกเพิ่มเข้าไปใน database สำเร็จ
+    assert.equal(mockDatabaseData.length, initialLength + 1, 'Tag should be added to the database');
+    assert.include(mockDatabaseData.map(entry => entry.tag), newTag, 'Tag should be included in the database');
+  });
+
+  it('should remove a tag from the database', () => {
+    const initialLength = mockDatabaseData.length;
+    const tagToRemove = 'Netflix';
+
+    // ลบ tag จาก database
+    removeTag(tagToRemove);
+
+    // ตรวจสอบว่า tag ถูกลบจาก database สำเร็จ
+    assert.equal(mockDatabaseData.length, initialLength - 1, 'Tag should be removed from the database');
+    assert.notInclude(mockDatabaseData.map(entry => entry.tag), tagToRemove, 'Tag should not be included in the database');
+  });
+});
+
+describe('defaultTag', () => {
+  it('should add tag Other when user does not add the tag ', () => {
+    const initialLength = mockDatabaseData.length;
+
+    // เรียกใช้ addTag โดยไม่ระบุ newTag
+    addTag();
+
+    // ตรวจสอบว่า tag ถูกเพิ่มเข้าไปใน database สำเร็จ
+    assert.equal(mockDatabaseData.length, initialLength + 1, 'Tag should be added to the database');
+    assert.include(mockDatabaseData.map(entry => entry.tag), 'Other', 'Tag should be set to "Other"');
+  });
+
+  it('should add the specified tag when user adds the tag ', () => {
+    const initialLength = mockDatabaseData.length;
+    const newTag = 'Netflix';
+
+    // เรียกใช้ addTag โดยระบุ newTag
+    addTag(newTag);
+
+    // ตรวจสอบว่า tag ถูกเพิ่มเข้าไปใน database สำเร็จ
+    assert.equal(mockDatabaseData.length, initialLength + 1, 'Tag should be added to the database');
+    assert.include(mockDatabaseData.map(entry => entry.tag), newTag, `Tag should be set to "${newTag}"`);
+  });
+});
 
 // Story 4
 
@@ -148,8 +193,8 @@ describe('searchByTag', () => {
     const result = await queryDatabaseForData(tag);
 
     const isCompleteAndAccurate = result.every(transaction =>
-      transaction.date !== undefined && 
-      transaction.text !== undefined && 
+      transaction.date !== undefined &&
+      transaction.text !== undefined &&
       transaction.tag !== undefined &&
       transaction.amount !== undefined &&
       transaction.balance !== undefined
@@ -158,3 +203,5 @@ describe('searchByTag', () => {
     expect(isCompleteAndAccurate).to.be.true;
   });
 });
+
+// console.log(mockDatabaseData);
