@@ -366,6 +366,7 @@ app.get('/history', async (req, res) => {
       res.send(headerDom);
       return;
     }
+    
     if(!month){
       const currentDate = new Date();
       const currentYear = currentDate.getFullYear();
@@ -975,5 +976,34 @@ app.post('/addtag', async (req, res) => {
   } finally {
     // Close the MongoDB connection
     await client.close();
+  }
+});
+
+app.get('/pie', async (req, res) => {
+  try {
+    const client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/");
+    await client.connect();
+    const database = client.db("CS266");
+    const collection = database.collection("User");
+    const collectionTag = database.collection("Tag");
+    console.log('connected');
+    // let { month, tag } = req.query;
+    // if(!month){
+    //   const currentDate = new Date();
+    //   const currentYear = currentDate.getFullYear();
+    //   const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+    //   month = `${currentYear}-${currentMonth}`;
+    //   //month = "2023-01";
+    // }
+    // if(!tag){
+    //   tag = "None";
+    // }
+
+    const data = await collection.find().toArray();
+    const processedData = data.map(entry => ({ tag: entry.tag, amount: entry.amount }));
+    res.json(processedData);
+  } catch (error) {
+    console.error('Error fetching data from MongoDB:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
