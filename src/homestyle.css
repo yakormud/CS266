@@ -48,6 +48,7 @@ body.dark{
     --bar-hover:#3A3B3C;
     --hovertag-color:#ccc;
 }
+
 /* === Custom Scroll Bar CSS === */
 ::-webkit-scrollbar {
     width: 8px;
@@ -1014,5 +1015,7 @@ input[type=text] {
 .tags{
     font-weight: 300;
 }
+
+
 
   
