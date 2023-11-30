@@ -1,6 +1,5 @@
 // Story 1
 const { MongoClient } = require('mongodb');
-const luxon = require('luxon');
 
 
 // เช็คว่าวันที่ validated ไหม
@@ -13,16 +12,21 @@ function isValidDate(selectedDate) {
     }
 
     // Convert the selectedDate string to a Date object
-    const selectedDateTime = new Date(selectedDate);
+    const selectedDateTime = luxon.DateTime.fromISO(selectedDate).toFormat('yyyy-MM-dd');
 
     // Get today's date
-    const today = luxon.DateTime.local();
+    const today = luxon.DateTime.local().toFormat('yyyy-MM-dd');
 
     // Calculate the date from one year ago
-    const oneYearAgo = today.minus({ years: 1 });
+    const oneYearAgo = luxon.DateTime.local().minus({ years: 1 }).toFormat('yyyy-MM-dd');
     //oneYearAgo.setFullYear(today.getFullYear() - 1);
 
     // Check if the selectedDate is within the past year
+    console.log(selectedDateTime)
+    console.log(today);
+    console.log(oneYearAgo)
+    console.log(selectedDateTime >= oneYearAgo)
+    console.log(selectedDateTime <= today)
     return selectedDateTime >= oneYearAgo && selectedDateTime <= today;
 }
 

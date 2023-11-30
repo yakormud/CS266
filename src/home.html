@@ -332,7 +332,7 @@
                                               document.getElementById('selectedDate').innerText = `${date}`;
                                             } else {
                                               // If the user didn't choose a date, set it to today
-                                              const defaultDate = today.toISOString().split("T")[0];
+                                              const defaultDate = today.toFormat('yyyy-MM-dd');
                                               Swal.fire("Transaction Date", defaultDate);
                                               // Update the selected date element with the default date
                                               document.getElementById('selectedDate').innerText = `${defaultDate}`;
