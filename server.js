@@ -179,11 +179,14 @@ app.get('/historyData', async (req, res) => {
     await client.connect();
     const database = client.db("CS266");
     const collection = database.collection("User");
+
+    const tagCondition = req.query.tag == "None" ? { } : { "tag": req.query.tag };
     const sumOfIncome = await collection.aggregate([
       {
         $match: {
           "input_type": "income",
-          "date": { $regex: month }
+          "date": { $regex: month },
+          ...tagCondition
         }
       },
       {
@@ -198,11 +201,12 @@ app.get('/historyData', async (req, res) => {
         }
       }
     ]).toArray();
-    const sumOfExpense = await collection.aggregate([
+    let sumOfExpense = await collection.aggregate([
       {
         $match: {
           "input_type": "expense",
-          "date": { $regex: month }
+          "date": { $regex: month },
+          ...tagCondition
         }
       },
       {
@@ -221,9 +225,10 @@ app.get('/historyData', async (req, res) => {
     // The result will be an array with a single document containing the totalIncome
     const totalIncome = sumOfIncome.length > 0 ? sumOfIncome[0].totalIncome : 0;
     const totalExpense = sumOfExpense.length > 0 ? sumOfExpense[0].totalIncome : 0;
-    //console.log("TotalD Income:", totalIncome);
-    //console.log("TotalD Expense:", totalExpense);
-    //console.log("TotalD Revenue:", totalIncome-totalExpense);
+    console.log("TotalD Income:", totalIncome);
+    console.log("TotalD Expense:", totalExpense);
+    console.log("TotalD Revenue:", totalIncome-totalExpense);
+    console.log(new Date());
 
     if (month && tag) {
       let headerDom = `<div class="titleContainer">
