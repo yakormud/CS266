@@ -54,6 +54,7 @@ body.dark {
     --hovertag-color: #ccc;
 }
 
+
 /* === Custom Scroll Bar CSS === */
 ::-webkit-scrollbar {
     width: 8px;

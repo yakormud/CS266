@@ -96,7 +96,7 @@
                                 <span class="text nav-text">Logout</span>
                             </a>
                         </li> -->
-                        <li class="mode">
+                        <li class="mode" id="theme-toggle">
                             <div class="sun-moon">
                                 <i class='bx bx-moon icon moon'></i>
                                 <i class='bx bx-sun icon sun'></i>
@@ -105,7 +105,7 @@
                             <div class="toggle-switch">
                                 <span class="switch"></span>
                             </div>
-                        </li>
+                        </li>         
                         
                     </div>
                 </div>
@@ -495,25 +495,43 @@
             
 
             <script>
+                // Function to set the mode in localStorage
+                function setMode(mode) {
+                    localStorage.setItem('mode', mode);
+                }
+            
                 const body = document.querySelector('body'),
-                sidebar = body.querySelector('nav'),
-                toggle = body.querySelector(".toggle"),
-                modeSwitch = body.querySelector(".toggle-switch"),
-                modeText = body.querySelector(".mode-text");
-                
-                toggle.addEventListener("click" , () =>{
+                    sidebar = body.querySelector('nav'),
+                    toggle = body.querySelector(".toggle"),
+                    modeSwitch = body.querySelector(".toggle-switch"),
+                    modeText = body.querySelector(".mode-text");
+            
+                // Function to toggle the sidebar
+                toggle.addEventListener("click", () => {
                     sidebar.classList.toggle("close");
-                 })
-                modeSwitch.addEventListener("click" , () =>{
+                });
+            
+                // Function to toggle between dark and light modes
+                modeSwitch.addEventListener("click", () => {
                     body.classList.toggle("dark");
             
-                    if(body.classList.contains("dark")){
+                    if (body.classList.contains("dark")) {
                         modeText.innerText = "Light mode";
-                    }else{
+                        setMode('dark'); // Save the mode in localStorage
+                    } else {
                         modeText.innerText = "Dark mode";
-                
-                     }
-                    });
+                        setMode('light'); // Save the mode in localStorage
+                    }
+                });
+            
+                // Check the mode stored in localStorage on page load
+                const storedMode = localStorage.getItem('mode');
+                if (storedMode) {
+                    body.classList.add(storedMode);
+                    if (storedMode === 'dark') {
+                        modeText.innerText = "Light mode";
+                    }
+                }
             </script>
             </div>
 
