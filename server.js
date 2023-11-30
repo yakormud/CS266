@@ -1032,9 +1032,123 @@ app.get('/pie', async (req, res) => {
     //   tag = "None";
     // }
 
-    const data = await collection.find().toArray();
-    const processedData = data.map(entry => ({ tag: entry.tag, amount: entry.amount }));
-    res.json(processedData);
+
+    const documents2 = await collection.aggregate([
+      {
+        $group: {
+          _id: { tag: '$tag', input_type: '$input_type' },
+          totalAmount: { $sum: { $toInt: '$amount' } }
+        }
+      },
+      {
+        $group: {
+          _id: '$_id.tag',
+          incomeSum: {
+            $sum: {
+              $cond: {
+                if: { $eq: ['$_id.input_type', 'income'] },
+                then: '$totalAmount',
+                else: 0
+              }
+            }
+          },
+          expenseSum: {
+            $sum: {
+              $cond: {
+                if: { $eq: ['$_id.input_type', 'expense'] },
+                then: '$totalAmount',
+                else: 0
+              }
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id:0, 
+          tag: '$_id', 
+          netBalance: '$expenseSum',
+        }
+      }
+    ]).toArray();
+    console.log(documents2)
+    res.json(documents2);
+
+    // const data = await collection.find().toArray();
+    // const processedData = data.map(entry => ({ tag: entry.tag, amount: entry.amount }));
+    // console.log(processedData);
+    // res.json(processedData);
+  } catch (error) {
+    console.error('Error fetching data from MongoDB:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/bar', async (req, res) => {
+  try {
+    const client = new MongoClient("mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/");
+    await client.connect();
+    const database = client.db("CS266");
+    const collection = database.collection("User");
+    // console.log('connected');
+    let { month, tag } = req.query;
+    if(!month){
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+      month = `${currentYear}-${currentMonth}`;
+      //month = "2023-01";
+    }
+    if(!tag){
+      tag = "None";
+    }
+
+
+    const documents2 = await collection.aggregate([
+      {
+        $group: {
+          _id: { tag: '$tag', input_type: '$input_type' },
+          totalAmount: { $sum: { $toInt: '$amount' } }
+        }
+      },
+      {
+        $group: {
+          _id: '$_id.tag',
+          incomeSum: {
+            $sum: {
+              $cond: {
+                if: { $eq: ['$_id.input_type', 'income'] },
+                then: '$totalAmount',
+                else: 0
+              }
+            }
+          },
+          expenseSum: {
+            $sum: {
+              $cond: {
+                if: { $eq: ['$_id.input_type', 'expense'] },
+                then: '$totalAmount',
+                else: 0
+              }
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id:0, 
+          tag: '$_id', 
+          netBalance: '$expenseSum',
+        }
+      }
+    ]).toArray();
+    // console.log(documents2)
+    res.json(documents2);
+
+    // const data = await collection.find().toArray();
+    // const processedData = data.map(entry => ({ tag: entry.tag, amount: entry.amount }));
+    // console.log(processedData);
+    // res.json(processedData);
   } catch (error) {
     console.error('Error fetching data from MongoDB:', error);
     res.status(500).send('Internal Server Error');
