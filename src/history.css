@@ -437,7 +437,7 @@ body.dark .home .text {
     color: var(--text-color);
 }
 
-.activity-data .data-list{
+.activity-data .data-list {
     font-size: 18px;
     font-weight: 400;
     white-space: nowrap;
@@ -539,7 +539,7 @@ input[type="date"] {
 .container-home {
     width: 860px;
     display: absolute;
-     /* background-color: lightblue;  */
+    /* background-color: lightblue;  */
     position: relative
 }
 
@@ -549,9 +549,9 @@ input[type="date"] {
     right: 0;
     top: 0;
     height: 100vh;
-    position: relative; 
+    position: relative;
 
-     /* background-color: #FAF000;  */
+    /* background-color: #FAF000;  */
 }
 
 .container-input .inputmoth {
@@ -589,18 +589,21 @@ input[type="date"] {
     border-radius: 1em;
     background-color: var(--bar-color);
     transition: 0.3s all ease-in-out;
-  }
-  .dropdown-el input:focus + label {
+}
+
+.dropdown-el input:focus+label {
     background: #def;
-  }
-  .dropdown-el input {
+}
+
+.dropdown-el input {
     width: 1px;
     height: 1px;
     display: inline-block;
     position: absolute;
     opacity: 0.01;
-  }
-  .dropdown-el label {
+}
+
+.dropdown-el label {
     border-top: 0.06em solid #d9d9d9;
     display: block;
     height: 2em;
@@ -610,23 +613,27 @@ input[type="date"] {
     cursor: pointer;
     position: relative;
     transition: 0.3s color ease-in-out;
-  }
-  .dropdown-el label:nth-child(2) {
+}
+
+.dropdown-el label:nth-child(2) {
     margin-top: 2em;
     border-top: 0.06em solid #d9d9d9;
-  }
-  .dropdown-el input:checked + label {
+}
+
+.dropdown-el input:checked+label {
     display: block;
     border-top: none;
     position: absolute;
     top: 0;
     width: 100%;
-  }
-  .dropdown-el input:checked + label:nth-child(2) {
+}
+
+.dropdown-el input:checked+label:nth-child(2) {
     margin-top: 0;
     position: relative;
-  }
-  .dropdown-el::after {
+}
+
+.dropdown-el::after {
     content: "";
     position: absolute;
     right: 0.8em;
@@ -634,35 +641,40 @@ input[type="date"] {
     border: 0.3em solid var(--text-color);
     border-color: var(--text-color) transparent transparent transparent;
     transition: 0.4s all ease-in-out;
-  }
-  .dropdown-el.expanded {
-    border: 0.06em solid var( --hovertag-color);
+}
+
+.dropdown-el.expanded {
+    border: 0.06em solid var(--hovertag-color);
     background: #fff;
     border-radius: 0.25em;
     padding: 0;
     box-shadow: rgba(0, 0, 0, 0.1) 3px 3px 5px 0px;
     max-height: 15em;
-  }
-  .dropdown-el.expanded label {
+}
+
+.dropdown-el.expanded label {
     border-top: 0.06em solid #d9d9d9;
-  }
-  .dropdown-el.expanded label:hover {
-    color: var( --hovertag-color);
-  }
-  .dropdown-el.expanded input:checked + label {
-    color:var( --hovertag-color);
-  }
-  .dropdown-el.expanded::after {
+}
+
+.dropdown-el.expanded label:hover {
+    color: var(--hovertag-color);
+}
+
+.dropdown-el.expanded input:checked+label {
+    color: var(--hovertag-color);
+}
+
+.dropdown-el.expanded::after {
     transform: rotate(-180deg);
     top: 0.55em;
-  }
+}
 
 .input-all-container {
     /* margin-left: 100%; */
-   
+
     /* left: 70px; */
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     margin-left: 22%;
     align-items: center;
     position: relative;
@@ -700,7 +712,7 @@ input[type="date"] {
     display: inline-block;
     margin-right: 1em;
     min-height: 2em;
-     max-height: 2em;
+    max-height: 2em;
     overflow: hidden;
     top: 0.5em;
     cursor: pointer;
@@ -792,7 +804,7 @@ input[type="date"] {
     top: 0.55em;
 }
 
-#search{
+#search {
     width: 50px;
     height: 34px;
     border: none;
@@ -838,9 +850,10 @@ input[type="date"] {
     border-radius: 5px;
     text-align: center;
     overflow: hidden;
-    text-overflow:ellipsis;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 .titleBubble p1 {
     font-size: 120%;
 }
@@ -892,7 +905,7 @@ input[type="date"] {
 
 }
 
-.activity-container p{
+.activity-container p {
     padding: 2%;
     padding-top: 0;
     padding-bottom: 0;
@@ -917,7 +930,7 @@ input[type="date"] {
     display: flex;
     justify-content: space-between;
     overflow: hidden;
-    text-overflow:ellipsis;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
 
@@ -928,7 +941,7 @@ input[type="date"] {
     justify-content: space-between;
 }
 
-.activityLine p{
+.activityLine p {
     padding: 2%;
     padding-top: 1%;
     padding-bottom: 1%;
@@ -938,7 +951,7 @@ input[type="date"] {
     display: flex;
     /* background-color: #7297a5; */
     justify-content: space-between;
-    
+
 }
 
 .container-graph {
@@ -960,5 +973,45 @@ input[type="date"] {
     gap: 10%;
 }
 
+.responsive-div {
+    height: 100vh;
+    width: 80vh;
+    background-color: lightblue; 
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+}
+/* Most spending tag */
+.tagContainer {
+    width: 23%;
+    height: 70px;
+    margin: 1%;
+    padding: 3%;
+    border-radius: 5px;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    align-items: center;
+    text-align: center;
+    font-weight: 400;
+    background-color: rgb(255, 255, 255);
+}
 
+.tagContainer span {
+    font-size: 100%;
+    font-weight: 450;
+}
 
+.spendingTag {
+    font-size: 20px;
+    font-weight: 450;
+    margin-top: 2%;
+    margin-bottom: 0.5%;
+    color: var(--text-color);
+}

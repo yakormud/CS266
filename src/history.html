@@ -194,9 +194,54 @@
                         });
                     </script>
 
+                        <div class="responsive-div" style="display: flex">
+                           <!-- <div><p style= "height: 0; padding: 12px 60px; font-size: 30px; font-weight:500; display: flex;"><b>Summary</b></p></div> -->
+                           <script src='https://cdn.plot.ly/plotly-2.27.0.min.js'></script>
+                           <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+                           <div id = 'chart' style="display: flex;" ></div>
+                            <script>
+                                fetch('/pie')
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        // Extract labels and values from the data
+                                        const labels = data.map(entry => entry.tag);
+                                        const values = data.map(entry => entry.amount);
+                                        const colors = ['red', 'green', 'blue', 'orange', 'purple', 'pink'];
+                                        // Create a pie chart using Plotly.js
+                                        const chartData = [{
+                                        labels,
+                                        values,
+                                        type: 'pie',
+                                        marker: {
+                                            line: {
+                                                color: 'black', // Specify the color of the pie chart lines
+                                                width: 2 // Specify the width of the pie chart lines
+                                            }
+                                        }}];
 
+                                        const chartLayout = {
+                                        title: 'This Month Summary',
+                                        height: 600, 
+                                        width: 700
+                                        };
 
+                                        Plotly.newPlot('chart', chartData, chartLayout);
+                                        // Plotly.toImage('chart', { format: 'png', height: 400, width: 400 })
+                                        //     .then(function(url) {
+                                        //     var img = new Image();
+                                        //     img.src = url;
+                                        //     // document.body.appendChild(img);
+                                        //     document.getElementById('chart2').appendChild(img);
+                                        //     });
+                                        })
+                                    .catch(error => console.error('Error creating new chart:', error));
+                            </script>
+
+                        </div>
+                    
+                    
                 </div>
+                
         </div>
         </section>
 

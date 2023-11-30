@@ -7,27 +7,27 @@ function isValidDate(selectedDate) {
     //ELSE NOT
     if (!selectedDate) {
         return false;
-      }
-    
-      // Convert the selectedDate string to a Date object
-      const selectedDateTime = new Date(selectedDate);
-    
-      // Get today's date
-      const today = new Date();
-    
-      // Calculate the date from one year ago
-      const oneYearAgo = new Date();
-      oneYearAgo.setFullYear(today.getFullYear() - 1);
-    
-      // Check if the selectedDate is within the past year
-      return selectedDateTime >= oneYearAgo && selectedDateTime <= today;
+    }
+
+    // Convert the selectedDate string to a Date object
+    const selectedDateTime = new Date(selectedDate);
+
+    // Get today's date
+    const today = new Date();
+
+    // Calculate the date from one year ago
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+    // Check if the selectedDate is within the past year
+    return selectedDateTime >= oneYearAgo && selectedDateTime <= today;
 }
 
 //เมื่อเลือกวันที่ จะเปลี่ยนวันที่ที่โชว์ใหม่
 function changeDate(oldDate, newDate) {
-    if(!isValidDate(newDate)){
+    if (!isValidDate(newDate)) {
         return false;
-    }else{
+    } else {
         oldDate = newDate;
         return oldDate;
     }
@@ -36,13 +36,13 @@ function changeDate(oldDate, newDate) {
 }
 
 //หลัง submit form แล้ววันที่ยังคงเป็นวันเดิม เพื่อให้พร้อมกับการกรอก transaction ต่อไป
-function submitDate(date, elementId){
-    if(elementId = new Date()){
+function submitDate(date, elementId) {
+    if (elementId = new Date()) {
         return true;
-    } 
-    if(!isValidDate(date)){
+    }
+    if (!isValidDate(date)) {
         return false;
-    }else{
+    } else {
         elementId = temp;
         return elementId;
     }
@@ -52,30 +52,88 @@ function submitDate(date, elementId){
 
 // Story 2 & 4
 
+// Mock data for the database
+const mockDatabaseData = [
+    {
+        _id: '655b77ad323b2b687142d98c',
+        amount: 50,
+        date: '2023-11-05',
+        input_type: 'expense',
+        tag: 'Food',
+        text: ' ',
+        balance: ' ',
+    },
+    {
+        _id: '655b77ad323b2b687142d98c',
+        amount: 50,
+        date: '2023-10-05',
+        input_type: 'expense',
+        tag: 'Travel',
+        text: ' ',
+        balance: ' ',
+    },
+];
+
 const { MongoClient } = require('mongodb');
 
 async function queryDatabaseForData() {
-const uri = "mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const uri = "mongodb+srv://ploy:ploy@cs266.hlnjicp.mongodb.net/";
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-try {
-  await client.connect();
-  const database = client.db('CS266'); // Replace 'YourDatabaseName' with your actual database name
-  const collection = database.collection('User');
+    try {
+        await client.connect();
+        const database = client.db('CS266'); // Replace 'YourDatabaseName' with your actual database name
+        const collection = database.collection('User');
 
-  // Assuming data has a similar structure in the database
-  const databaseData = await collection.find({}).toArray();
+        // Assuming data has a similar structure in the database
+        const databaseData = await collection.find({}).toArray();
 
-  return databaseData;
-} finally {
-  await client.close();
-}
+        return databaseData;
+    } finally {
+        await client.close();
+    }
 }
 
 // Story 3
 
+const addTag = (tag) => {
+    if (tag != null) {
+        mockDatabaseData.push({
+            _id: '655b77ad323b2b687142d98c',
+            amount: 100,
+            date: '2023-11-06',
+            input_type: 'income',
+            tag: 'Netflix',
+            text: ' ',
+            balance: ' ',
+        });
+    } else {
+        mockDatabaseData.push({
+            _id: '655b77ad323b2b687142d98c',
+            amount: 100,
+            date: '2023-11-07',
+            input_type: 'income',
+            tag: 'Other',
+            text: ' ',
+            balance: ' ',
+        });
+    }
+
+};
+
+const removeTag = (tag) => {
+    const index = mockDatabaseData.findIndex(entry => entry.tag === tag);
+    if (index > -1) {
+        mockDatabaseData.splice(index, 1);
+    }
+};
+
+
 module.exports = {
     isValidDate,
     changeDate,
-    submitDate
-  };
+    submitDate,
+    mockDatabaseData,
+    addTag,
+    removeTag
+};
