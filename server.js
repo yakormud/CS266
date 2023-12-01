@@ -1024,19 +1024,8 @@ app.get('/pie', async (req, res) => {
     const database = client.db("CS266");
     const collection = database.collection("User");
     const collectionTag = database.collection("Tag");
-    console.log('connected');
 
     let { month} = req.query;
-    // if(!month){
-    //   const currentDate = new Date();
-    //   const currentYear = currentDate.getFullYear();
-    //   const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
-    //   month = `${currentYear}-${currentMonth}`;
-    //   //month = "2023-01";
-    // }
-    
-    // console.log(JSON.stringify(month));
-
     const documents2 = await collection.aggregate([
       {
         $match: {
@@ -1080,65 +1069,8 @@ app.get('/pie', async (req, res) => {
         }
       }
     ]).toArray();
-//     const documents2 = await collection.aggregate([
-//   {
-//     $match: {
-//       date: {
-//         $regex: `^${month}`
-//       },
-//       tag: {
-//         $eq: tag
-//       }
-//     }
-//   },
-//   {
-//     $group: {
-//       _id: { tag: '$tag', input_type: '$input_type' },
-//       totalAmount: { $sum: { $toInt: '$amount' } }
-//     }
-//   },
-//   {
-//     $group: {
-//       _id: '$_id.tag',
-//       incomeSum: {
-//         $sum: {
-//           $cond: {
-//             if: { $eq: ['$_id.input_type', 'income'] },
-//             then: '$totalAmount',
-//             else: 0
-//           }
-//         }
-//       },
-//       expenseSum: {
-//         $sum: {
-//           $cond: {
-//             if: { $eq: ['$_id.input_type', 'expense'] },
-//             then: '$totalAmount',
-//             else: 0
-//           }
-//         }
-//       }
-//     }
-//   },
-//   {
-//     $project: {
-//       _id: 0, 
-//       tag: '$_id', 
-//       netBalance: '$expenseSum',
-//     }
-//   }
-// ]).toArray();
-
-// console.log(documents2);
-// res.json(documents2);
-
-    console.log(documents2)
     res.json(documents2);
 
-    // const data = await collection.find().toArray();
-    // const processedData = data.map(entry => ({ tag: entry.tag, amount: entry.amount }));
-    // console.log(processedData);
-    // res.json(processedData);
   } catch (error) {
     console.error('Error fetching data from MongoDB:', error);
     res.status(500).send('Internal Server Error');
@@ -1151,21 +1083,31 @@ app.get('/bar', async (req, res) => {
     await client.connect();
     const database = client.db("CS266");
     const collection = database.collection("User");
-    // console.log('connected');
-    let { month, tag } = req.query;
-    if(!month){
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
-      month = `${currentYear}-${currentMonth}`;
+
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+    month = `${currentYear}-${currentMonth}`;
       //month = "2023-01";
-    }
-    if(!tag){
-      tag = "None";
-    }
+    
+    const monthsArray = [];
+     for( i = 0; i<=12; i++){
+      const month = new Date(currentYear, currentMonth - i - 1, 1);
+      const formattedMonth = `${month.getFullYear()}-${String(month.getMonth() + 1).padStart(2, '0')}`;
+      monthsArray.push(formattedMonth);
+     }  
+     
+     const resultsArray = [];
+    // let { month } = req.query;
+    
 
-
+    for (const month of monthsArray) {
     const documents2 = await collection.aggregate([
+      {
+        $match: {
+          "date": { $regex: new RegExp(month) }
+        }
+      },
       {
         $group: {
           _id: { tag: '$tag', input_type: '$input_type' },
@@ -1196,20 +1138,23 @@ app.get('/bar', async (req, res) => {
         }
       },
       {
+        $group: {
+          _id: 0,
+          sumIncome: { $sum: '$incomeSum' }, // Sum up incomeSum for the same month
+          sumExpense: { $sum: '$expenseSum' }
+        }
+      },
+      {
         $project: {
-          _id:0, 
-          tag: '$_id', 
-          netBalance: '$expenseSum',
+          _id: 0,
+          sumIncome: 1,
+          sumExpense: 1,
         }
       }
     ]).toArray();
-    // console.log(documents2)
-    res.json(documents2);
-
-    // const data = await collection.find().toArray();
-    // const processedData = data.map(entry => ({ tag: entry.tag, amount: entry.amount }));
-    // console.log(processedData);
-    // res.json(processedData);
+    resultsArray.push({ month, ...documents2[0] }); // Assuming documents2 is an array with a single result
+} 
+    res.json(resultsArray);
   } catch (error) {
     console.error('Error fetching data from MongoDB:', error);
     res.status(500).send('Internal Server Error');

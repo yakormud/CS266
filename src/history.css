@@ -537,7 +537,7 @@ input[type="date"] {
 }
 
 .container-home {
-    width: 860px;
+    width: 750px;
     display: absolute;
     /* background-color: lightblue;  */
     position: relative
@@ -840,7 +840,7 @@ input[type="date"] {
     width: 120%;
     margin-left: 7%;
     justify-content: flex-start;
-    gap: 7%;
+    gap: 1%;
 }
 
 .titleBubble {
@@ -975,8 +975,8 @@ input[type="date"] {
 
 .responsive-div {
     height: 100vh;
-    width: 80vh;
-    background-color: lightblue; 
+    width: 32%;
+    background-color: rgb(255, 255, 255); 
     text-align: center;
     padding: 20px;
     box-sizing: border-box;
@@ -1015,3 +1015,22 @@ input[type="date"] {
     margin-bottom: 0.5%;
     color: var(--text-color);
 }
+/* for bar chart */
+.bottom-div {
+    position: absolute; 
+    top: 50%; 
+    left: 10%; 
+    /* width: 150px;
+    height: 80px; */
+    z-index: 2; 
+  }
+
+  /* for pie*/
+  .top-div {
+    position: absolute; 
+    top: 10%; 
+    left: 10%; 
+    /* width: 150px;
+    height: 80px; */
+    z-index: 1; 
+  }

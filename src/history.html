@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://unpkg.com/luxon@2.0.2/build/global/luxon.min.js"></script>
 
     <title>History</title>
 </head>
@@ -203,9 +202,8 @@
                            <!-- <div><p style= "height: 0; padding: 12px 60px; font-size: 30px; font-weight:500; display: flex;"><b>Summary</b></p></div> -->
                            <script src='https://cdn.plot.ly/plotly-2.27.0.min.js'></script>
                            <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-                           <div id = 'bar' style="display: flex;" ></div>
-                           <div id = 'chart' style="display: flex;" ></div>
-                            
+                                <div id = 'chart' class="top-div" ></div>
+                                <div id = 'bar' class="bottom-div" ></div>
                            <script>
                             document.addEventListener("DOMContentLoaded", function () {
                             // Function to fetch and update content
@@ -224,6 +222,7 @@
                                         // hide the chart
                                         return;
                                         } 
+                                        
                                         chartContainer.style.display = 'block';
                                         // Extract labels and values from the data
                                         const labels = data.map(entry => entry.tag);
@@ -247,8 +246,8 @@
                                         const chartLayout = {
                                         // title: `This ${month} Expense Summary`,
                                         title: `Expense Summary`,
-                                        height: 300, 
-                                        width: 300
+                                        height: 350, 
+                                        width: 400
                                         };
 
                                         Plotly.newPlot('chart', chartData, chartLayout);
@@ -263,53 +262,71 @@
                             updateContent();
                         });
                     </script>
-                            <!-- <script>
 
+                    <!-- bar chart -->
+                        <script>
+                           function updateContent() {
+                            const month = document.getElementById("month").value;
+                        
+                            // Fetch data with the selected month as a query parameter
+                            fetch('/bar')
+                                .then(response => response.json())
+                                .then(data => {
+                                    // // Check if there is data
+                                    // if (data.length === 0) {
+                                    //     console.log('No data available for the selected month');
+                                    //     return;
+                                    // }
+                        
+                                    // Extract labels (months) and values (sumIncome and sumExpense) from the data
+                                    const months = data.map(entry => entry.month);
+                                    const sumIncome = data.map(entry => entry.sumIncome);
+                                    const sumExpense = data.map(entry => entry.sumExpense);
 
+                                    // Create two bar charts using Plotly.js
+                                    const trace1 = {
+                                        x: months, 
+                                        y: sumIncome,
+                                        name: 'Income',
+                                        type: 'bar'
+                                    };
 
-                                fetch(`/pie?month=${month}`)
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        // Extract labels and values from the data
-                                        const labels = data.map(entry => entry.tag);
-                                        const values = data.map(entry => entry.netBalance);
-                                        const colors = ['red', 'green', 'blue', 'orange', 'purple', 'pink'];
-                                        const hoverText = data.map(entry => `${entry.tag}: ${entry.netBalance}`);
-                                        // Create a pie chart using Plotly.js
-                                        const chartData = [{
-                                        labels,
-                                        values,
-                                        type: 'pie',
-                                        hoverinfo: 'label+percent', 
-                                        text: hoverText, 
-                                        marker: {
-                                            line: {
-                                                color: 'black', // Specify the color of the pie chart lines
-                                                width: 2 // Specify the width of the pie chart lines
-                                            }
-                                        }}];
+                                    const trace2 = {
+                                        x: months, 
+                                        y: sumExpense,
+                                        name: 'Expense',
+                                        type: 'bar'
+                                    };
 
-                                        const chartLayout = {
-                                        title: 'This Month Expense Summary',
-                                        height: 400, 
-                                        width: 400
-                                        };
+                                    const layout = {
+                                        barmode: 'group', // Grouped bar chart
+                                        title: 'Total Income and Expense by Month',
+                                        xaxis: {
+                                            title: 'Month'
+                                        },
+                                        yaxis: {
+                                            title: 'Amount',
+                                            rangemode: 'tozero'
+                                        },
+                                        height: 350, 
+                                        width: 400 
+                                    };
 
-                                        Plotly.newPlot('chart', chartData, chartLayout);
-                                        // Plotly.toImage('chart', { format: 'png', height: 400, width: 400 })
-                                        //     .then(function(url) {
-                                        //     var img = new Image();
-                                        //     img.src = url;
-                                        //     // document.body.appendChild(img);
-                                        //     document.getElementById('chart2').appendChild(img);
-                                        //     });
-                                        })
-                                    .catch(error => console.error('Error creating new chart:', error));
-                            </script> -->
-                            <!-- <script>
-                                fetch('/bar')
-                                    
-                            </script> -->
+                                    // Create the bar charts
+                                    Plotly.newPlot('bar', [trace1, trace2], layout);
+                                                                
+                                })
+                                .catch(error => console.error('Error fetching /bar', error));
+                        }
+                        
+                        // Event listener for month change
+                        document.getElementById("month").addEventListener("change", function () {
+                            updateContent();
+                        });
+                        
+                        // Initial update
+                        updateContent();
+                    </script>
 
                         </div>
                     
