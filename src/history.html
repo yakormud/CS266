@@ -195,7 +195,38 @@
                             console.log(this.value);
                         });
 
-                        
+                    
+                    </script>
+                    <script>
+                        function logId(id) {
+                            console.log('Deleting ID:', id);
+                    
+                            fetch(`/deleteData?id=${id}`, {
+                                method: 'DELETE'
+                            })
+                            .then(result => {
+                                const month = document.getElementById("month").value;
+                                const tag = document.getElementById("tags").value;
+                    
+                                // Fetch /history with the selected date as a query parameter
+                                fetch(`/historyData?month=${month}&&tag=${tag}`)
+                                    .then(response => {
+                                        console.log('Fetch response:', response);
+                                        return response.text();
+                                    })
+                                    .then(html => {
+                                        console.log('Received HTML:', html);
+                                        // Update the content of the history container
+                                        document.getElementById('activity').innerHTML = html;
+                                        const month = document.getElementById("month").value;
+
+                                // Fetch /history with the selected date as a query parameter
+                                
+                                    })
+                                    .catch(error => console.error('Error fetching /history:', error));
+                            })
+                            .catch(error => console.error('Error fetching data:', error));
+                        }
                     </script>
 
                         <div class="responsive-div" style="display: flex">

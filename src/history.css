@@ -900,6 +900,7 @@ input[type="date"] {
 }
 
 .activity-container {
+    position: relative;
     background-color: white;
     border-radius: 5px;
 
@@ -920,10 +921,12 @@ input[type="date"] {
 .act-header {
     font-size: 100%;
     font-weight: 500;
+    margin-right: 2%;
 }
 
 .act-lower {
     font-size: 90%;
+    margin-right: 2%;
 }
 
 .activityInfo {
@@ -1034,3 +1037,20 @@ input[type="date"] {
     height: 80px; */
     z-index: 1; 
   }
+
+  .removeTransaction {
+    position: absolute;
+    top: 30%;
+    right: 1%;
+    border-radius: 50%;
+    width: 3vh;
+    height: 3vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.removeTransaction:hover {
+    cursor: pointer;
+    background-color: rgb(209, 209, 209);
+}
