@@ -367,6 +367,7 @@ app.get('/historyData', async (req, res) => {
           }
           headerDom += `<div class="activityIncome">
                                       <div class="activity-container">
+                                      <span class="removeTransaction" id="removeTransaction" data-toggle="tooltip" data-placement="top" title="Delete transaction" onClick="logId('${row._id}')">-</span>
                                           <div class="activityInfo">
                                               <p class="act-header">${row.text}</p>`;
           if (row.input_type == "income") {
@@ -649,6 +650,7 @@ app.get('/history', async (req, res) => {
         }
         headerDom += `<div class="activityIncome">
                       <div class="activity-container">
+                      <span class="removeTransaction" id="removeTransaction" data-toggle="tooltip" data-placement="top" title="Delete transaction" onClick="logId('${row._id}')">-</span>
                           <div class="activityInfo">
                               <p class="act-header">${row.text}</p>`;
         if (row.input_type == "income") {
