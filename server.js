@@ -1025,7 +1025,8 @@ app.get('/pie', async (req, res) => {
     const collection = database.collection("User");
     const collectionTag = database.collection("Tag");
     console.log('connected');
-    // let { month, tag } = req.query;
+
+    let { month} = req.query;
     // if(!month){
     //   const currentDate = new Date();
     //   const currentYear = currentDate.getFullYear();
@@ -1033,12 +1034,15 @@ app.get('/pie', async (req, res) => {
     //   month = `${currentYear}-${currentMonth}`;
     //   //month = "2023-01";
     // }
-    // if(!tag){
-    //   tag = "None";
-    // }
-
+    
+    // console.log(JSON.stringify(month));
 
     const documents2 = await collection.aggregate([
+      {
+        $match: {
+          "date": { $regex: month }
+        }
+          },
       {
         $group: {
           _id: { tag: '$tag', input_type: '$input_type' },
@@ -1076,6 +1080,58 @@ app.get('/pie', async (req, res) => {
         }
       }
     ]).toArray();
+//     const documents2 = await collection.aggregate([
+//   {
+//     $match: {
+//       date: {
+//         $regex: `^${month}`
+//       },
+//       tag: {
+//         $eq: tag
+//       }
+//     }
+//   },
+//   {
+//     $group: {
+//       _id: { tag: '$tag', input_type: '$input_type' },
+//       totalAmount: { $sum: { $toInt: '$amount' } }
+//     }
+//   },
+//   {
+//     $group: {
+//       _id: '$_id.tag',
+//       incomeSum: {
+//         $sum: {
+//           $cond: {
+//             if: { $eq: ['$_id.input_type', 'income'] },
+//             then: '$totalAmount',
+//             else: 0
+//           }
+//         }
+//       },
+//       expenseSum: {
+//         $sum: {
+//           $cond: {
+//             if: { $eq: ['$_id.input_type', 'expense'] },
+//             then: '$totalAmount',
+//             else: 0
+//           }
+//         }
+//       }
+//     }
+//   },
+//   {
+//     $project: {
+//       _id: 0, 
+//       tag: '$_id', 
+//       netBalance: '$expenseSum',
+//     }
+//   }
+// ]).toArray();
+
+// console.log(documents2);
+// res.json(documents2);
+
     console.log(documents2)
     res.json(documents2);
 
