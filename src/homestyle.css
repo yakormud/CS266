@@ -949,13 +949,14 @@ input[type=text] {
 }
 
 .activity-container {
+    position: relative;
     background-color: white;
     border-radius: 5px;
 
 }
 
 .activity-container p{
-    padding: 2%;
+    padding: 3%;
     padding-top: 0;
     padding-bottom: 0;
 }
@@ -969,10 +970,13 @@ input[type=text] {
 .act-header {
     font-size: 100%;
     font-weight: 500;
+    padding-right: 10%;
+    margin-right: 3%;
 }
 
 .act-lower {
     font-size: 90%;
+    margin-right: 3%;
 }
 
 .activityInfo {
@@ -1014,6 +1018,23 @@ input[type=text] {
 
 .tags{
     font-weight: 300;
+}
+
+.removeTransaction {
+    position: absolute;
+    top: 30%;
+    right: 1%;
+    border-radius: 50%;
+    width: 3vh;
+    height: 3vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.removeTransaction:hover {
+    cursor: pointer;
+    background-color: rgb(209, 209, 209);
 }
 
 

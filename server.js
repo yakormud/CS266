@@ -130,6 +130,7 @@ app.get('/transacData', async (req, res) => {
 
           headerDom += `<div class="activityIncome">
                                       <div class="activity-container">
+                                      <span class="removeTransaction" id="removeTransaction" data-toggle="tooltip" data-placement="top" title="Delete transaction" onClick="logId('${row._id}')">-</span>
                                           <div class="activityInfo">
                                               <p class="act-header">${row.text}</p>`;
           if (row.input_type == "income") {
@@ -163,6 +164,44 @@ app.get('/transacData', async (req, res) => {
     // Close the connection
     await client.close();
   }
+});
+
+const { ObjectId } = require('mongodb');
+app.delete('/deleteData', async (req, res) => {
+  const id = req.query.id; // Assuming the ID is passed as a query parameter
+  try {
+    // Connect to the MongoDB server
+    await client.connect();
+
+    // Access the database and collection
+    const database = client.db("CS266");
+    const collection = database.collection("User");
+
+    // Convert the string representation of the ObjectId to an actual ObjectId
+    //
+    
+    const objectId = new ObjectId(id); 
+
+    // Construct the delete query
+    const query = { _id: objectId };
+
+    // Delete the document
+    const result = await collection.deleteOne(query);
+
+    // Log the result
+    console.log(`${result.deletedCount} document(s) deleted`);
+
+  } finally {
+    res.json({ success: true });
+    // Close the connection
+    await client.close();
+  }
+});
+
+// Your other routes and server setup go here
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
 });
 
 
