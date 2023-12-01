@@ -180,7 +180,7 @@ app.get('/historyData', async (req, res) => {
     const database = client.db("CS266");
     const collection = database.collection("User");
 
-    const tagCondition = req.query.tag == "None" ? { } : { "tag": req.query.tag };
+    const tagCondition = req.query.tag == "None" ? {} : { "tag": req.query.tag };
     const sumOfIncome = await collection.aggregate([
       {
         $match: {
@@ -221,13 +221,37 @@ app.get('/historyData', async (req, res) => {
         }
       }
     ]).toArray();
+    const sumOfTag = await collection.aggregate([
+      {
+        $match: {
+          "input_type": "expense",
+          "date": { $regex: month }
+        }
+      },
+      {
+        $addFields: {
+          parsedAmount: { $toInt: "$amount" }
+        }
+      },
+      {
+        $group: {
+          _id: "$tag",
+          totalExpense: { $sum: "$parsedAmount" }
+        }
+      },
+      {
+        $sort: {
+          totalExpense: -1 // Sort in ascending order by tag
+        }
+      },
+    ]).toArray();
 
     // The result will be an array with a single document containing the totalIncome
     const totalIncome = sumOfIncome.length > 0 ? sumOfIncome[0].totalIncome : 0;
     const totalExpense = sumOfExpense.length > 0 ? sumOfExpense[0].totalIncome : 0;
     console.log("TotalD Income:", totalIncome);
     console.log("TotalD Expense:", totalExpense);
-    console.log("TotalD Revenue:", totalIncome-totalExpense);
+    console.log("TotalD Revenue:", totalIncome - totalExpense);
     console.log(new Date());
 
     if (month && tag) {
@@ -284,6 +308,17 @@ app.get('/historyData', async (req, res) => {
         }
 
       } else {
+
+        //show tag table
+        headerDom += '<div class = "spendingTag">Most spending tag</div>'
+        sumOfTag.forEach(expense => {
+          headerDom += `<div class = "tagContainer">
+            <i class="uil uil-pricetag-alt"></i>
+            <span>${expense._id}</span>
+            <br>
+            <p>${expense.totalExpense}</p></div>`;
+        });
+
         headerDom += '<center><div class = "dateUpper">Recent Activity</div> <br></center>';
 
         userHistory.forEach(row => {
@@ -502,22 +537,70 @@ app.get('/history', async (req, res) => {
       "date": -1
     };
 
-    //show tag table
-    headerDom += '<div class = "spendingTag">Most spending tag</div>'
-    sumOfTag.forEach(expense => {
-      headerDom += `<div class = "tagContainer">
-      <i class="uil uil-pricetag-alt"></i>
-      <span>${expense._id}</span>
-      <br>
-      <p>${expense.totalExpense}</p></div>`;
-    });
-
     let userHistory = await collection.find(query).sort(sort).toArray();
     let dateSet = new Set();
+
+    // // Assuming sumOfTag is an array of objects with _id and totalExpense properties
+    // const tags = sumOfTag.map(expense => expense._id);
+
+    // // Construct a query using the extracted tags
+    // const queryTag = {
+    //   "tag": { $in: tags },
+    //   "date": { $regex: month } // Make sure to replace selectedMonth with the actual month
+    // };
+
+    // // Fetch userHistoryTag using the new query
+    // let userHistoryTag = await collection.find(queryTag).sort(sort).toArray();
+
+    // // Extract tags from the first aggregation result
+    // const tags = sumOfTag.map(expense => expense._id);
+
+    // // Use the tags to construct a query for finding documents
+    // const queryTag = {
+    //   "tag": { $in: tags },
+    //   "date": { $regex: "2023-11" }
+    // };
+
+    // // Fetch userHistoryTag using another aggregation pipeline
+    // let userHistoryTag = await collection.aggregate([
+    //   {
+    //     $match: queryTag
+    //   },
+    //   {
+    //     $addFields: {
+    //       parsedAmount: { $toInt: "$amount" }
+    //     }
+    //   },
+    //   {
+    //     $group: {
+    //       _id: "$tag",
+    //       totalExpense: { $sum: "$parsedAmount" }
+    //     }
+    //   },
+    //   {
+    //     $sort: {
+    //       totalExpense: -1 // Sort in ascending order by tag
+    //     }
+    //   },
+    // ]).toArray();
+
+    // console.log("Sum of Tag:", sumOfTag);
+    // console.log("Selected Month:", month);
 
     if (userHistory.length < 0) {
       headerDom += '<center><h>No Activity</h></center>';
     } else {
+
+      //show tag table
+      headerDom += '<div class = "spendingTag">Most spending tag</div>'
+      sumOfTag.forEach(expense => {
+        headerDom += `<div class = "tagContainer">
+      <i class="uil uil-pricetag-alt"></i>
+      <span>${expense._id}</span>
+      <br>
+      <p>${expense.totalExpense}</p></div>`;
+      });
+
       headerDom += '<center><h><div class = "dateUpper">Recent Activity</div></h> <br></center>';
 
       userHistory.forEach(row => {
@@ -1063,8 +1146,8 @@ app.get('/pie', async (req, res) => {
       },
       {
         $project: {
-          _id:0, 
-          tag: '$_id', 
+          _id: 0,
+          tag: '$_id',
           netBalance: '$expenseSum',
         }
       }
