@@ -1,9 +1,12 @@
 // Story 1
 const { MongoClient } = require('mongodb');
+const luxon = require('luxon');
+const Plotly = require('plotly');
 
 
 // เช็คว่าวันที่ validated ไหม
 function isValidDate(selectedDate) {
+    
     //GET TO DAY DATE AND THEN MAKE RANGE TO DAY TO PAST YEAR (1 YEAR RANGE)
     //IF INPUT SELECTEDDATE IS IN RAGE RETURN TRUE
     //ELSE NOT
@@ -22,11 +25,11 @@ function isValidDate(selectedDate) {
     //oneYearAgo.setFullYear(today.getFullYear() - 1);
 
     // Check if the selectedDate is within the past year
-    console.log(selectedDateTime)
-    console.log(today);
-    console.log(oneYearAgo)
-    console.log(selectedDateTime >= oneYearAgo)
-    console.log(selectedDateTime <= today)
+    // console.log(selectedDateTime)
+    // console.log(today);
+    // console.log(oneYearAgo)
+    // console.log(selectedDateTime >= oneYearAgo)
+    // console.log(selectedDateTime <= today)
     return selectedDateTime >= oneYearAgo && selectedDateTime <= today;
 }
 
@@ -134,6 +137,78 @@ const removeTag = (tag) => {
     }
 };
 
+// Updated makeGraph function that accepts data as a parameter
+function makeGraph(data) {
+    const chartContainer = document.getElementById('chart');
+
+    if (data.every(entry => Object.keys(entry).length === 0)) {
+        chartContainer.style.display = 'none';
+        return new Promise((resolve, reject) => {
+            // Simulating an asynchronous operation (e.g., fetching data)
+            setTimeout(() => {
+                const result = processData(data);
+                resolve(result);
+            }, 1); // Simulating a delay of 1 second
+        });
+    }
+
+    chartContainer.style.display = 'block';
+
+    // Extract labels and values from the data
+    const labels = data.map(entry => entry.tag);
+    const values = data.map(entry => entry.netBalance);
+    const colors = ['red', 'green', 'blue', 'orange', 'purple', 'pink'];
+    const hoverText = data.map(entry => `${entry.tag}: ${entry.netBalance}`);
+
+    // Create a pie chart using Plotly.js
+    const chartData = [{
+        labels,
+        values,
+        type: 'pie',
+        hoverinfo: 'label+percent',
+        text: hoverText,
+        marker: {
+            line: {
+                color: 'black',
+                width: 2
+            }
+        }
+    }];
+
+    const chartLayout = {
+        title: 'Expense Summary',
+        height: 350,
+        width: 400
+    };
+
+    return new Promise((resolve, reject) => {
+        // Simulating an asynchronous operation (e.g., fetching data)
+        setTimeout(() => {
+            const result = processData(data);
+            resolve(result);
+        }, 1); // Simulating a delay of 1 second
+    });
+
+    //Plotly.newPlot('chart', chartData, chartLayout);
+}
+
+function processData(data) {
+    // Process the data as needed
+    // For example, updating the DOM, etc.
+    return 'Processed data';
+}
+
+function setDarkMode(mode) {
+    if(mode === 'Dark'){
+        
+    }
+    return mode;
+}
+
+
+
+
+
 
 module.exports = {
     isValidDate,
@@ -141,5 +216,7 @@ module.exports = {
     submitDate,
     mockDatabaseData,
     addTag,
-    removeTag
+    removeTag,
+    makeGraph,
+    setDarkMode
 };

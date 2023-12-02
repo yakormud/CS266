@@ -130,7 +130,7 @@ app.get('/transacData', async (req, res) => {
 
           headerDom += `<div class="activityIncome">
                                       <div class="activity-container">
-                                      <span class="removeTransaction" id="removeTransaction" data-toggle="tooltip" data-placement="top" title="Delete transaction" onClick="logId('${row._id}')">-</span>
+                                      <span class="removeTransaction" id="'${row._id}'" data-toggle="tooltip" data-placement="top" onClick="logId('${row._id}')"title="Delete transaction">-</span>
                                           <div class="activityInfo">
                                               <p class="act-header">${row.text}</p>`;
           if (row.input_type == "income") {

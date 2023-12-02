@@ -1,11 +1,16 @@
 const chai = require('chai');
 const expect = chai.expect;
-const { isValidDate, changeDate, submitDate, mockDatabaseData, addTag, removeTag } = require('../src/addDate'); // Import your functions
-
+const { isValidDate, changeDate, submitDate, mockDatabaseData, addTag, removeTag, makeGraph, setDarkMode } = require('../src/addDate'); // Import your functions
+const fs = require('fs');
 const sinon = require('sinon');
 const { assert } = require('chai');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const { JSDOM } = require('jsdom');
+const luxon = require('luxon');
+const path = require('path');
+
+
 
 // Mock server response for /historyData endpoint
 const mockServerResponse = '<div class="activity">Mocked history data</div>';
@@ -20,47 +25,42 @@ const queryDatabaseForData = async (tag) => {
 
 // Story 1
 
-describe('isValidDate', () => {
-  it('should return false for a date in the future', () => {
+describe('[Sprint 1]: User Story 1', () => {
+  it('date selection should return false for a date in the future', () => {
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + 1); // One day in the future
     const isValid = isValidDate(futureDate.toISOString());
     expect(isValid).to.be.false;
   });
 
-  it('should return true for a date exactly one year ago', () => {
+  it('date selection should return true for a date exactly one year ago', () => {
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1); // Exactly one year ago
     const isValid = isValidDate(oneYearAgo.toISOString());
     expect(isValid).to.be.true;
   });
 
-  it('should return false for a date more than one year ago', () => {
+  it('date selection should return false for a date more than one year ago', () => {
     const moreThanOneYearAgo = new Date();
     moreThanOneYearAgo.setFullYear(moreThanOneYearAgo.getFullYear() - 1 - 1); // More than one year ago
     const isValid = isValidDate(moreThanOneYearAgo.toISOString());
     expect(isValid).to.be.false;
   });
-});
-
-describe('changeDate', () => {
-  it('should change the element value to the provided date', () => {
+  it('date should change the element value to the provided date', () => {
     let newDate = '2023-11-09';
     let element = '2023-11-07'; // Mock element with value property
 
     expect(changeDate(element, newDate)).to.equal(newDate);
   });
 
-  it('should not change the element value for a future date', () => {
+  it('date should not change the element value for a future date', () => {
     let newDate = '2024-11-05';
     let element = '2023-11-09'; // Mock element with value property
 
     expect(changeDate(element, newDate)).to.be.false;
   });
-});
 
-describe('submitDate', () => {
-  it('should keep the date input value unchanged when the form is submitted', () => {
+  it('page should keep the date input value unchanged when the form is submitted', () => {
     const date = '2023-11-09';
     expect(submitDate(date)).to.be.true;
   });
@@ -68,7 +68,7 @@ describe('submitDate', () => {
 
 // Story 2
 
-describe('searchByMonth', () => {
+describe('[Sprint 1]: User Story 2', () => {
   it('should retrieve transactions sorted by date within the selected month', async () => {
     const result = await queryDatabaseForData();
     // Assuming result is an array of transactions
@@ -111,7 +111,7 @@ describe('searchByMonth', () => {
 
 // Story 3
 
-describe('Add / Remove / Save Tag', () => {
+describe('[Sprint 1]: User Story 3', () => {
   it('should add a tag to the database', () => {
     const initialLength = mockDatabaseData.length;
     const newTag = 'Netflix';
@@ -135,9 +135,7 @@ describe('Add / Remove / Save Tag', () => {
     assert.equal(mockDatabaseData.length, initialLength - 1, 'Tag should be removed from the database');
     assert.notInclude(mockDatabaseData.map(entry => entry.tag), tagToRemove, 'Tag should not be included in the database');
   });
-});
 
-describe('defaultTag', () => {
   it('should add tag Other when user does not add the tag ', () => {
     const initialLength = mockDatabaseData.length;
 
@@ -162,9 +160,10 @@ describe('defaultTag', () => {
   });
 });
 
+
 // Story 4
 
-describe('searchByTag', () => {
+describe('[Sprint 1]: User Story 4', () => {
   it('should retrieve transactions based on the selected tag', async () => {
     const tag = 'Food'; // Example tag
     const result = await queryDatabaseForData(tag);
@@ -203,5 +202,160 @@ describe('searchByTag', () => {
     expect(isCompleteAndAccurate).to.be.true;
   });
 });
+
+// Story 5
+
+describe('[Sprint 2]: User Story 5', function () {
+  it('should display chart when data is present', function (done) {
+      // Create a virtual DOM environment
+      const dom = new JSDOM('<!DOCTYPE html><div id="chart"></div>', { runScripts: 'dangerously' });
+      global.window = dom.window;
+      global.document = dom.window.document;
+
+      // Create a spy for makeGraph
+      const makeGraphSpy = sinon.spy(makeGraph);
+
+      // Trigger the function you want to test (e.g., calling the function that contains your code)
+      makeGraphSpy([{ tag: 'Category 1', netBalance: 100 }]).then(() => {
+          // Assert that the chart is displayed
+          const chartContainer = document.getElementById('chart');
+          expect(chartContainer.style.display).to.equal('block');
+
+          // Check if makeGraph was called
+          expect(makeGraphSpy.calledOnce).to.be.true;
+
+          // Clean up the virtual DOM
+          global.window = undefined;
+          global.document = undefined;
+
+          // Signal that the test is complete
+          done();
+      });
+  });
+
+  it('should not display chart when data is empty', function (done) {
+    // Create a virtual DOM environment
+    const dom = new JSDOM('<!DOCTYPE html><div id="chart"></div>', { runScripts: 'dangerously' });
+    global.window = dom.window;
+    global.document = dom.window.document;
+
+    // Create a spy for makeGraph
+    const makeGraphSpy = sinon.spy(makeGraph);
+
+    // Trigger the function you want to test with empty data
+    makeGraphSpy([{ }]).then(() => {
+      // Assert that the chart is not displayed
+      const chartContainer = document.getElementById('chart');
+      expect(chartContainer.style.display).to.equal('none');
+
+      // Check if makeGraph was called
+      expect(makeGraphSpy.calledOnce).to.be.true;
+
+      // Clean up the virtual DOM
+      global.window = undefined;
+      global.document = undefined;
+
+      // Signal that the test is complete
+      done();
+  }).catch(error => {
+      // Handle errors
+      console.error('Test failed:', error);
+
+      // Clean up the virtual DOM
+      global.window = undefined;
+      global.document = undefined;
+  });
+
+  
+  });
+  it('should not display chart again when data were removed', function (done) {
+    // Create a virtual DOM environment
+    const dom = new JSDOM('<!DOCTYPE html><div id="chart"></div>', { runScripts: 'dangerously' });
+    global.wisndow = dom.window;
+    global.document = dom.window.document;
+
+    // Create a spy for makeGraph
+    const makeGraphSpy = sinon.spy(makeGraph);
+
+    // Trigger the function you want to test (e.g., calling the function that contains your code)
+    makeGraphSpy([{ tag: 'Category 1', netBalance: 100 }])
+        .then(() => {
+            // Assert that the chart is displayed
+            const chartContainer = document.getElementById('chart');
+            expect(chartContainer.style.display).to.equal('block');
+
+            // Check if makeGraph was called
+            expect(makeGraphSpy.calledOnce).to.be.true;
+
+            // Now, call makeGraph again with empty data
+            return makeGraphSpy([{}]);
+        })
+        .then(() => {
+            // Assert that the chart is not displayed
+            const chartContainer = document.getElementById('chart');
+            expect(chartContainer.style.display).to.equal('none');
+
+            // Check if makeGraph was called again
+            expect(makeGraphSpy.calledTwice).to.be.true;
+
+            // Clean up the virtual DOM
+            global.window = undefined;
+            global.document = undefined;
+
+            // Signal that the test is complete
+            done();
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Test failed:', error);
+
+            // Clean up the virtual DOM
+            global.window = undefined;
+            global.document = undefined;
+
+            // Signal that the test is complete with failure
+            done(error);
+        });
+    });
+});
+
+describe('[Sprint 2]: User Story 7', () => {
+  let html = fs.readFileSync(path.join(__dirname, '..' ,'/src/home.html'), 'utf8');
+  let dom = new JSDOM(html);
+
+  it('should change mode to dark mode if it was light mode before', () => {
+    expect(setDarkMode('dark')).to.equal('dark');
+  });
+  it('should change mode to light mode if it was dark mode before', () => {
+    expect(setDarkMode('light')).to.equal('light');
+  });
+  it('changing the page will also keep the mode unchanged', () => {
+    // Your test logic here
+    let body = dom.window.document.querySelector('body');
+    let modeSwitch = dom.window.document.querySelector('.toggle-switch');
+
+    expect(body.classList.contains('dark')).to.be.false;
+
+    // changing the page
+
+    html = fs.readFileSync(path.join(__dirname, '..' ,'/src/history.html'), 'utf8');
+    dom = new JSDOM(html);
+    body = dom.window.document.querySelector('body');
+    modeSwitch = dom.window.document.querySelector('.toggle-switch');
+
+    expect(body.classList.contains('dark')).to.be.false;
+
+    
+});
+
+
+
+  
+});
+
+
+
+
+
 
 // console.log(mockDatabaseData);
