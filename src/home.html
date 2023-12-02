@@ -15,7 +15,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
-
+    
     
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,7 +26,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>  
     <script src="addDate.js"></script> 
-    <script src="https://unpkg.com/luxon@2.0.2/build/global/luxon.min.js"></script>
+    
+    <!-- <script src="https://unpkg.com/luxon@2.0.2/build/global/luxon.min.js"></script> -->
 
     
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -126,10 +127,11 @@
 
                         </div>
                         
-                        <script>
+                        <script type="module">
+                            import { DateTime } from 'https://cdn.skypack.dev/luxon';
                                 document.addEventListener("DOMContentLoaded", function () {
                                     
-                                    const today = luxon.DateTime.local().toJSDate();
+                                    const today = DateTime.local().toJSDate();
                                     //const Luxonformatt = Luxontoday.toFormat('yyyy-MM-ddTHH:mm:ssZZ');
 
                                     //const today = new Date(Luxonformatt);
@@ -172,40 +174,41 @@
                                 updateContent();
                             });
                         </script>
+                        
                         <script>
                             function logId(id) {
-                                console.log('Deleting ID:', id);
-                        
-                                fetch(`/deleteData?id=${id}`, {
-                                    method: 'DELETE'
-                                })
-                                .then(result => {
-                        
-                                    // Fetch the updated content after successful deletion
-                                    const today = luxon.DateTime.local().toJSDate();
-                                    const year = today.getFullYear();
-                                    const month = String(today.getMonth() + 1).padStart(2, '0');
-                                    const day = String(today.getDate()).padStart(2, '0');
-                                    const formattedDate = `${year}-${month}-${day}`;
-                        
-                                    console.log('Formatted date:', formattedDate);
-                        
-                                    // Fetch /history with the selected date as a query parameter
-                                    fetch(`/transacData?month=${formattedDate}`)
-                                        .then(response => {
-                                            console.log('Fetch response:', response);
-                                            return response.text();
-                                        })
-                                        .then(html => {
-                                            console.log('Received HTML:', html);
-                                            // Update the content of the history container
-                                            document.getElementById('activity').innerHTML = html;
-                                        })
-                                        .catch(error => console.error('Error fetching /history:', error));
-                                })
-                                .catch(error => console.error('Error fetching data:', error));
-                            }
-                        </script>
+                                    console.log('Deleting ID:', id);
+
+                                    fetch(`/deleteData?id=${id}`, {
+                                        method: 'DELETE'
+                                    })
+                                    .then(result => {
+
+                                        // Fetch the updated content after successful deletion
+                                        const today = new Date();
+                                        const year = today.getFullYear();
+                                        const month = String(today.getMonth() + 1).padStart(2, '0');
+                                        const day = String(today.getDate()).padStart(2, '0');
+                                        const formattedDate = `${year}-${month}-${day}`;
+
+                                        console.log('Formatted date:', formattedDate);
+
+                                        // Fetch /history with the selected date as a query parameter
+                                        fetch(`/transacData?month=${formattedDate}`)
+                                            .then(response => {
+                                                //console.log('Fetch response:', response);
+                                                return response.text();
+                                            })
+                                            .then(html => {
+                                                //console.log('Received HTML:', html);
+                                                // Update the content of the history container
+                                                document.getElementById('activity').innerHTML = html;
+                                            })
+                                            .catch(error => console.error('Error fetching /history:', error));
+                                    })
+                                    .catch(error => console.error('Error fetching data:', error));
+                                }
+                          </script>
                         
                         
                       <!-- <div class="text">Expense Tracker</div> -->
@@ -335,9 +338,10 @@
 
                                     
 
-                                    <script>
+                                    <script type="module">
+                                        import { DateTime } from 'https://cdn.skypack.dev/luxon';
                                         //const today = new Date();
-                                        const todays = luxon.DateTime.local();
+                                        const todays = DateTime.local();
                                         // If the user didn't choose a date, set it to today
                                             const formattedDate = todays.toFormat('yyyy-MM-dd');
                                         
@@ -346,7 +350,7 @@
                                             
                                         document.getElementById('date').addEventListener('click', async () => {
                                           try {
-                                            const today = luxon.DateTime.local();
+                                            const today = DateTime.local();
                                             const formattedDate = today.toFormat('yyyy-MM-dd');
                                             const oneYearAgo = today.minus({ years: 1 }).toFormat('yyyy-MM-dd');
                                         
@@ -364,12 +368,20 @@
                                                 if (!value) {
                                                   return "Please select a date.";
                                                 }else {
-                                                // Call the isValidDate function from another JS file
-                                                const isValid = isValidDate(value);
+                                                  
+                                                    if (!selectedDate) {
+                                                        return false;
+                                                    }
 
-                                                if (!isValid) {
-                                                    return 'Invalid date!'; // You can customize the error message
-                                                }
+                                                    // Convert the selectedDate string to a Date object
+                                                    const selectedDateTime = DateTime.fromISO(selectedDate).toFormat('yyyy-MM-dd');
+
+                                                    // Get today's date
+                                                    const today = DateTime.local().toFormat('yyyy-MM-dd');
+
+                                                    // Calculate the date from one year ago
+                                                    const oneYearAgo = DateTime.local().minus({ years: 1 }).toFormat('yyyy-MM-dd');
+                                                    return selectedDateTime >= oneYearAgo && selectedDateTime <= today;
                                                 }
                                               }
                                             });
