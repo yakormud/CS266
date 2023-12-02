@@ -1,13 +1,16 @@
 const chai = require('chai');
 const expect = chai.expect;
-const { isValidDate, changeDate, submitDate, mockDatabaseData, addTag, removeTag, makeGraph } = require('../src/addDate'); // Import your functions
-
+const { isValidDate, changeDate, submitDate, mockDatabaseData, addTag, removeTag, makeGraph, setDarkMode } = require('../src/addDate'); // Import your functions
+const fs = require('fs');
 const sinon = require('sinon');
 const { assert } = require('chai');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { JSDOM } = require('jsdom');
 const luxon = require('luxon');
+const path = require('path');
+
+
 
 // Mock server response for /historyData endpoint
 const mockServerResponse = '<div class="activity">Mocked history data</div>';
@@ -315,6 +318,44 @@ describe('[Sprint 2]: User Story 5', function () {
         });
     });
 });
+
+describe('[Sprint 2]: User Story 7', () => {
+  let html = fs.readFileSync(path.join(__dirname, '..' ,'/src/home.html'), 'utf8');
+  let dom = new JSDOM(html);
+
+  it('should change mode to dark mode if it was light mode before', () => {
+    expect(setDarkMode('dark')).to.equal('dark');
+  });
+  it('should change mode to light mode if it was dark mode before', () => {
+    expect(setDarkMode('light')).to.equal('light');
+  });
+  it('changing the page will also keep the mode unchanged', () => {
+    // Your test logic here
+    let body = dom.window.document.querySelector('body');
+    let modeSwitch = dom.window.document.querySelector('.toggle-switch');
+
+    expect(body.classList.contains('dark')).to.be.false;
+
+    // changing the page
+
+    html = fs.readFileSync(path.join(__dirname, '..' ,'/src/history.html'), 'utf8');
+    dom = new JSDOM(html);
+    body = dom.window.document.querySelector('body');
+    modeSwitch = dom.window.document.querySelector('.toggle-switch');
+
+    expect(body.classList.contains('dark')).to.be.false;
+
+    
+});
+
+
+
+  
+});
+
+
+
+
 
 
 // console.log(mockDatabaseData);

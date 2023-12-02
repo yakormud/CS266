@@ -198,6 +198,14 @@ function processData(data) {
     return 'Processed data';
 }
 
+function setDarkMode(mode) {
+    if(mode === 'Dark'){
+        
+    }
+    return mode;
+}
+
+
 
 
 
@@ -209,5 +217,6 @@ module.exports = {
     mockDatabaseData,
     addTag,
     removeTag,
-    makeGraph
+    makeGraph,
+    setDarkMode
 };
