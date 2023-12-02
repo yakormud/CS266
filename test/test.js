@@ -22,47 +22,42 @@ const queryDatabaseForData = async (tag) => {
 
 // Story 1
 
-describe('isValidDate', () => {
-  it('should return false for a date in the future', () => {
+describe('[Sprint 1]: User Story 1', () => {
+  it('date selection should return false for a date in the future', () => {
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + 1); // One day in the future
     const isValid = isValidDate(futureDate.toISOString());
     expect(isValid).to.be.false;
   });
 
-  it('should return true for a date exactly one year ago', () => {
+  it('date selection should return true for a date exactly one year ago', () => {
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1); // Exactly one year ago
     const isValid = isValidDate(oneYearAgo.toISOString());
     expect(isValid).to.be.true;
   });
 
-  it('should return false for a date more than one year ago', () => {
+  it('date selection should return false for a date more than one year ago', () => {
     const moreThanOneYearAgo = new Date();
     moreThanOneYearAgo.setFullYear(moreThanOneYearAgo.getFullYear() - 1 - 1); // More than one year ago
     const isValid = isValidDate(moreThanOneYearAgo.toISOString());
     expect(isValid).to.be.false;
   });
-});
-
-describe('changeDate', () => {
-  it('should change the element value to the provided date', () => {
+  it('date should change the element value to the provided date', () => {
     let newDate = '2023-11-09';
     let element = '2023-11-07'; // Mock element with value property
 
     expect(changeDate(element, newDate)).to.equal(newDate);
   });
 
-  it('should not change the element value for a future date', () => {
+  it('date should not change the element value for a future date', () => {
     let newDate = '2024-11-05';
     let element = '2023-11-09'; // Mock element with value property
 
     expect(changeDate(element, newDate)).to.be.false;
   });
-});
 
-describe('submitDate', () => {
-  it('should keep the date input value unchanged when the form is submitted', () => {
+  it('page should keep the date input value unchanged when the form is submitted', () => {
     const date = '2023-11-09';
     expect(submitDate(date)).to.be.true;
   });
@@ -70,7 +65,7 @@ describe('submitDate', () => {
 
 // Story 2
 
-describe('searchByMonth', () => {
+describe('[Sprint 1]: User Story 2', () => {
   it('should retrieve transactions sorted by date within the selected month', async () => {
     const result = await queryDatabaseForData();
     // Assuming result is an array of transactions
@@ -113,7 +108,7 @@ describe('searchByMonth', () => {
 
 // Story 3
 
-describe('Add / Remove / Save Tag', () => {
+describe('[Sprint 1]: User Story 3', () => {
   it('should add a tag to the database', () => {
     const initialLength = mockDatabaseData.length;
     const newTag = 'Netflix';
@@ -137,9 +132,7 @@ describe('Add / Remove / Save Tag', () => {
     assert.equal(mockDatabaseData.length, initialLength - 1, 'Tag should be removed from the database');
     assert.notInclude(mockDatabaseData.map(entry => entry.tag), tagToRemove, 'Tag should not be included in the database');
   });
-});
 
-describe('defaultTag', () => {
   it('should add tag Other when user does not add the tag ', () => {
     const initialLength = mockDatabaseData.length;
 
@@ -164,9 +157,10 @@ describe('defaultTag', () => {
   });
 });
 
+
 // Story 4
 
-describe('searchByTag', () => {
+describe('[Sprint 1]: User Story 4', () => {
   it('should retrieve transactions based on the selected tag', async () => {
     const tag = 'Food'; // Example tag
     const result = await queryDatabaseForData(tag);
@@ -296,7 +290,7 @@ describe('[Sprint 2]: User Story 5', function () {
         .then(() => {
             // Assert that the chart is not displayed
             const chartContainer = document.getElementById('chart');
-            expect(chartContainer.style.display).to.equal('block');
+            expect(chartContainer.style.display).to.equal('none');
 
             // Check if makeGraph was called again
             expect(makeGraphSpy.calledTwice).to.be.true;
