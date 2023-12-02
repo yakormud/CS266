@@ -1208,12 +1208,13 @@ app.get('/bar', async (req, res) => {
     const database = client.db("CS266");
     const collection = database.collection("User");
 
+    
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
     const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
     month = `${currentYear}-${currentMonth}`;
       //month = "2023-01";
-    
+
     const monthsArray = [];
      for( i = 0; i<=12; i++){
       const month = new Date(currentYear, currentMonth - i - 1, 1);
