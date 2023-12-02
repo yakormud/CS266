@@ -1,11 +1,13 @@
 const chai = require('chai');
 const expect = chai.expect;
-const { isValidDate, changeDate, submitDate, mockDatabaseData, addTag, removeTag } = require('../src/addDate'); // Import your functions
+const { isValidDate, changeDate, submitDate, mockDatabaseData, addTag, removeTag, makeGraph } = require('../src/addDate'); // Import your functions
 
 const sinon = require('sinon');
 const { assert } = require('chai');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const { JSDOM } = require('jsdom');
+const luxon = require('luxon');
 
 // Mock server response for /historyData endpoint
 const mockServerResponse = '<div class="activity">Mocked history data</div>';
@@ -203,5 +205,122 @@ describe('searchByTag', () => {
     expect(isCompleteAndAccurate).to.be.true;
   });
 });
+
+// Story 5
+
+describe('[Sprint 2]: User Story 5', function () {
+  it('should display chart when data is present', function (done) {
+      // Create a virtual DOM environment
+      const dom = new JSDOM('<!DOCTYPE html><div id="chart"></div>', { runScripts: 'dangerously' });
+      global.window = dom.window;
+      global.document = dom.window.document;
+
+      // Create a spy for makeGraph
+      const makeGraphSpy = sinon.spy(makeGraph);
+
+      // Trigger the function you want to test (e.g., calling the function that contains your code)
+      makeGraphSpy([{ tag: 'Category 1', netBalance: 100 }]).then(() => {
+          // Assert that the chart is displayed
+          const chartContainer = document.getElementById('chart');
+          expect(chartContainer.style.display).to.equal('block');
+
+          // Check if makeGraph was called
+          expect(makeGraphSpy.calledOnce).to.be.true;
+
+          // Clean up the virtual DOM
+          global.window = undefined;
+          global.document = undefined;
+
+          // Signal that the test is complete
+          done();
+      });
+  });
+
+  it('should not display chart when data is empty', function (done) {
+    // Create a virtual DOM environment
+    const dom = new JSDOM('<!DOCTYPE html><div id="chart"></div>', { runScripts: 'dangerously' });
+    global.window = dom.window;
+    global.document = dom.window.document;
+
+    // Create a spy for makeGraph
+    const makeGraphSpy = sinon.spy(makeGraph);
+
+    // Trigger the function you want to test with empty data
+    makeGraphSpy([{ }]).then(() => {
+      // Assert that the chart is not displayed
+      const chartContainer = document.getElementById('chart');
+      expect(chartContainer.style.display).to.equal('none');
+
+      // Check if makeGraph was called
+      expect(makeGraphSpy.calledOnce).to.be.true;
+
+      // Clean up the virtual DOM
+      global.window = undefined;
+      global.document = undefined;
+
+      // Signal that the test is complete
+      done();
+  }).catch(error => {
+      // Handle errors
+      console.error('Test failed:', error);
+
+      // Clean up the virtual DOM
+      global.window = undefined;
+      global.document = undefined;
+  });
+
+  
+  });
+  it('should not display chart again when data were removed', function (done) {
+    // Create a virtual DOM environment
+    const dom = new JSDOM('<!DOCTYPE html><div id="chart"></div>', { runScripts: 'dangerously' });
+    global.wisndow = dom.window;
+    global.document = dom.window.document;
+
+    // Create a spy for makeGraph
+    const makeGraphSpy = sinon.spy(makeGraph);
+
+    // Trigger the function you want to test (e.g., calling the function that contains your code)
+    makeGraphSpy([{ tag: 'Category 1', netBalance: 100 }])
+        .then(() => {
+            // Assert that the chart is displayed
+            const chartContainer = document.getElementById('chart');
+            expect(chartContainer.style.display).to.equal('block');
+
+            // Check if makeGraph was called
+            expect(makeGraphSpy.calledOnce).to.be.true;
+
+            // Now, call makeGraph again with empty data
+            return makeGraphSpy([{}]);
+        })
+        .then(() => {
+            // Assert that the chart is not displayed
+            const chartContainer = document.getElementById('chart');
+            expect(chartContainer.style.display).to.equal('block');
+
+            // Check if makeGraph was called again
+            expect(makeGraphSpy.calledTwice).to.be.true;
+
+            // Clean up the virtual DOM
+            global.window = undefined;
+            global.document = undefined;
+
+            // Signal that the test is complete
+            done();
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Test failed:', error);
+
+            // Clean up the virtual DOM
+            global.window = undefined;
+            global.document = undefined;
+
+            // Signal that the test is complete with failure
+            done(error);
+        });
+    });
+});
+
 
 // console.log(mockDatabaseData);
