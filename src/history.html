@@ -297,19 +297,26 @@
                     <!-- bar chart -->
                         <script>
                            function updateContent() {
-                            const month = document.getElementById("month").value;
+                            const selectedMonth = document.getElementById("month").value;
                         
                             // Fetch data with the selected month as a query parameter
-                            fetch('/bar')
+                            fetch(`/bar?month=${month}`)
                                 .then(response => response.json())
                                 .then(data => {
-                                    // // Check if there is data
-                                    // if (data.length === 0) {
-                                    //     console.log('No data available for the selected month');
-                                    //     return;
-                                    // }
-                        
-                                    // Extract labels (months) and values (sumIncome and sumExpense) from the data
+                                    // const hasData = data.length > 0 && data[0].sumIncome !== undefined && data[0].sumExpense !== undefined;
+                                    const selectedMonthData = data.find(entry => entry.month === selectedMonth);
+
+                                    // Check if the selected month has valid sumIncome and sumExpense
+                                    const hasData = selectedMonthData && selectedMonthData.sumIncome !== undefined && selectedMonthData.sumExpense !== undefined;
+
+                                    const chartContainer = document.getElementById('bar');
+
+                                    if (!hasData) {
+                                        chartContainer.style.display = 'none';
+                                        return;
+                                    }
+                                        
+                                        chartContainer.style.display = 'block';
                                     const months = data.map(entry => entry.month);
                                     const sumIncome = data.map(entry => entry.sumIncome);
                                     const sumExpense = data.map(entry => entry.sumExpense);
