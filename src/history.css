@@ -968,7 +968,7 @@ input[type="date"] {
 }
 
 .graphContainer {
-    background-color: rgb(255, 255, 255);
+    background-color: var(--body-color);
     padding: 3%;
     width: 85%;
     margin-left: 7%;
@@ -979,7 +979,7 @@ input[type="date"] {
 .responsive-div {
     height: 100vh;
     width: 32%;
-    background-color: rgb(255, 255, 255); 
+    background-color: var(--body-color); 
     text-align: center;
     padding: 20px;
     box-sizing: border-box;
@@ -988,6 +988,7 @@ input[type="date"] {
     right: 0;
     display: flex;
     align-items: center;
+    transition: var(--tran-05);
 }
 /* Most spending tag */
 .tagContainer {
