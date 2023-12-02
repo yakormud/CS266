@@ -211,11 +211,11 @@
                                 // Fetch /history with the selected date as a query parameter
                                 fetch(`/historyData?month=${month}&&tag=${tag}`)
                                     .then(response => {
-                                        console.log('Fetch response:', response);
+                                        //console.log('Fetch response:', response);
                                         return response.text();
                                     })
                                     .then(html => {
-                                        console.log('Received HTML:', html);
+                                        //console.log('Received HTML:', html);
                                         // Update the content of the history container
                                         document.getElementById('activity').innerHTML = html;
                                         const month = document.getElementById("month").value;
