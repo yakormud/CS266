@@ -2,6 +2,9 @@
 const { MongoClient } = require('mongodb');
 const luxon = require('luxon');
 const Plotly = require('plotly');
+const path = require('path');
+const fs = require('fs');
+const { JSDOM } = require('jsdom');
 
 
 // เช็คว่าวันที่ validated ไหม
@@ -197,13 +200,83 @@ function processData(data) {
     // For example, updating the DOM, etc.
     return 'Processed data';
 }
+const mockDocument = new JSDOM(`
+  <!DOCTYPE html>
+  <html>
+    <body>
+      <nav></nav>
+      <div class="toggle"></div>
+      <div class="toggle-switch"></div>
+      <div class="mode-text"></div>
+    </body>
+  </html>
+`);
 
 function setDarkMode(mode) {
-    if(mode === 'Dark'){
-        
+
+global.document = mockDocument.window.document;
+
+
+    // functio nto check whether it should be dark or light and then return value to process in html page
+    if(mode === 'dark'){
+        mode = 'dark';
+    }else {
+        mode = 'light'
     }
+    const body = document.querySelector('body'),
+                sidebar = body.querySelector('nav'),
+                toggle = body.querySelector(".toggle"),
+                modeSwitch = body.querySelector(".toggle-switch"),
+                modeText = body.querySelector(".mode-text");
+        
+            // Function to toggle the sidebar
+            toggle.addEventListener("click", () => {
+                sidebar.classList.toggle("close");
+            });
+        
+            // Function to toggle between dark and light modes
+            modeSwitch.addEventListener("click", () => {
+                body.classList.toggle("dark");
+        
+                if (body.classList.contains("dark")) {
+                    modeText.innerText = "Light mode";
+                    setMode('dark'); // Save the mode in localStorage
+                } else {
+                    modeText.innerText = "Dark mode";
+                    setMode('light'); // Save the mode in localStorage
+                }
+            });
     return mode;
 }
+
+function summaryOfTag(data, tag){
+
+    const filteredData = data.filter((item) => item.tag === tag);
+
+  // Calculate total_expense, total_income, and total_revenue
+  const totalExpense = filteredData
+    .filter((item) => item.input_type === "expense")
+    .reduce((sum, item) => sum + item.amount, 0);
+
+  const totalIncome = filteredData
+    .filter((item) => item.input_type === "income")
+    .reduce((sum, item) => sum + item.amount, 0);
+
+  const totalRevenue = totalIncome - totalExpense;
+
+  //console.log(totalRevenue)
+  //console.log(totalIncome)
+  //console.log(totalExpense)
+
+  // Return an array of objects with calculated totals
+  return [
+    {
+      total_expense: totalExpense,
+      total_income: totalIncome,
+      total_revenue: totalRevenue,
+    },
+  ];
+};
 
 
 
@@ -218,5 +291,6 @@ module.exports = {
     addTag,
     removeTag,
     makeGraph,
-    setDarkMode
+    setDarkMode,
+    summaryOfTag
 };

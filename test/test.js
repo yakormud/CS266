@@ -1,6 +1,6 @@
 const chai = require('chai');
 const expect = chai.expect;
-const { isValidDate, changeDate, submitDate, mockDatabaseData, addTag, removeTag, makeGraph, setDarkMode } = require('../src/addDate'); // Import your functions
+const { isValidDate, changeDate, submitDate, mockDatabaseData, addTag, removeTag, makeGraph, setDarkMode, summaryOfTag } = require('../src/addDate'); // Import your functions
 const fs = require('fs');
 const sinon = require('sinon');
 const { assert } = require('chai');
@@ -344,16 +344,99 @@ describe('[Sprint 2]: User Story 7', () => {
     modeSwitch = dom.window.document.querySelector('.toggle-switch');
 
     expect(body.classList.contains('dark')).to.be.false;
-
-    
+    });
 });
 
 
+// Error in sprint 2
 
+
+describe('[Sprint 2]: Error 1', () => {
+  const mockData = [
+    {
+      _id: "655b77ad323b2b687142d98c",
+      amount: 50,
+      date: "2023-11-05",
+      input_type: "expense",
+      tag: "Food",
+      text: "",
+    },
+    {
+      _id: "655b77ad323b2b687142d98d",
+      amount: 30,
+      date: "2023-11-06",
+      input_type: "income",
+      tag: "Food",
+      text: "",
+    },
+    {
+      _id: "655b77ad323b2b687142d98e",
+      amount: 20,
+      date: "2023-11-07",
+      input_type: "revenue",
+      tag: "Food",
+      text: "",
+    },
+    // Add more mock data with different tags
+    {
+      _id: "655b77ad323b2b687142d98f",
+      amount: 20,
+      date: "2023-11-08",
+      input_type: "expense",
+      tag: "Travel",
+      text: "",
+    },
+    {
+      _id: "655b77ad323b2b687142d990",
+      amount: 40,
+      date: "2023-11-09",
+      input_type: "income",
+      tag: "Travel",
+      text: "",
+    },
+    {
+      _id: "655b77ad323b2b687142d991",
+      amount: 30,
+      date: "2023-11-10",
+      input_type: "expense",
+      tag: "Other",
+      text: "",
+    },
+    {
+      _id: "655b77ad323b2b687142d992",
+      amount: 60,
+      date: "2023-11-11",
+      input_type: "income",
+      tag: "Other",
+      text: "",
+    },
+  ];
+
+  it('in history page, choosing a tag that have no data, will show 0 money revenue', () => {
+    const tagWithData = "Unknown";
+    const data = summaryOfTag(mockData, tagWithData)[0];
+
+    //console.log(data)
+
+    // Your actual expectations based on the calculated totals
+    expect(data.total_expense).to.equal(0)
+    expect(data.total_income).to.equal(0);
+    expect(data.total_revenue).to.equal(0); // (total_income - total_expense)
+  });
   
+  it('in history page, choosing a tag that has data in the database will show accumulated money based on tag and type', () => {
+
+    const tagWithData = "Food";
+    const data = summaryOfTag(mockData, tagWithData)[0];
+
+    //console.log(data)
+
+    // Your actual expectations based on the calculated totals
+    expect(data.total_expense).to.equal(50);
+    expect(data.total_income).to.equal(30);
+    expect(data.total_revenue).to.equal(-20); // (total_income - total_expense)
+  });
 });
-
-
 
 
 
