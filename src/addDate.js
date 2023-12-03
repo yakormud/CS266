@@ -9,7 +9,7 @@ const { JSDOM } = require('jsdom');
 
 // เช็คว่าวันที่ validated ไหม
 function isValidDate(selectedDate) {
-    
+
     //GET TO DAY DATE AND THEN MAKE RANGE TO DAY TO PAST YEAR (1 YEAR RANGE)
     //IF INPUT SELECTEDDATE IS IN RAGE RETURN TRUE
     //ELSE NOT
@@ -78,10 +78,28 @@ const mockDatabaseData = [
     },
     {
         _id: '655b77ad323b2b687142d98c',
-        amount: 50,
+        amount: 70,
         date: '2023-10-05',
         input_type: 'expense',
         tag: 'Travel',
+        text: ' ',
+        balance: ' ',
+    },
+    {
+        _id: '655b77ad323b2b687142d98c',
+        amount: 100,
+        date: '2023-11-09',
+        input_type: 'expense',
+        tag: 'Food',
+        text: ' ',
+        balance: ' ',
+    },
+    {
+        _id: '655b77ad323b2b687142d98c',
+        amount: 500,
+        date: '2023-12-03',
+        input_type: 'income',
+        tag: 'Other',
         text: ' ',
         balance: ' ',
     },
@@ -214,71 +232,101 @@ const mockDocument = new JSDOM(`
 
 function setDarkMode(mode) {
 
-global.document = mockDocument.window.document;
+    global.document = mockDocument.window.document;
 
 
     // functio nto check whether it should be dark or light and then return value to process in html page
-    if(mode === 'dark'){
+    if (mode === 'dark') {
         mode = 'dark';
-    }else {
+    } else {
         mode = 'light'
     }
     const body = document.querySelector('body'),
-                sidebar = body.querySelector('nav'),
-                toggle = body.querySelector(".toggle"),
-                modeSwitch = body.querySelector(".toggle-switch"),
-                modeText = body.querySelector(".mode-text");
-        
-            // Function to toggle the sidebar
-            toggle.addEventListener("click", () => {
-                sidebar.classList.toggle("close");
-            });
-        
-            // Function to toggle between dark and light modes
-            modeSwitch.addEventListener("click", () => {
-                body.classList.toggle("dark");
-        
-                if (body.classList.contains("dark")) {
-                    modeText.innerText = "Light mode";
-                    setMode('dark'); // Save the mode in localStorage
-                } else {
-                    modeText.innerText = "Dark mode";
-                    setMode('light'); // Save the mode in localStorage
-                }
-            });
+        sidebar = body.querySelector('nav'),
+        toggle = body.querySelector(".toggle"),
+        modeSwitch = body.querySelector(".toggle-switch"),
+        modeText = body.querySelector(".mode-text");
+
+    // Function to toggle the sidebar
+    toggle.addEventListener("click", () => {
+        sidebar.classList.toggle("close");
+    });
+
+    // Function to toggle between dark and light modes
+    modeSwitch.addEventListener("click", () => {
+        body.classList.toggle("dark");
+
+        if (body.classList.contains("dark")) {
+            modeText.innerText = "Light mode";
+            setMode('dark'); // Save the mode in localStorage
+        } else {
+            modeText.innerText = "Dark mode";
+            setMode('light'); // Save the mode in localStorage
+        }
+    });
     return mode;
 }
 
-function summaryOfTag(data, tag){
+function summaryOfTag(data, tag) {
 
     const filteredData = data.filter((item) => item.tag === tag);
 
-  // Calculate total_expense, total_income, and total_revenue
-  const totalExpense = filteredData
-    .filter((item) => item.input_type === "expense")
-    .reduce((sum, item) => sum + item.amount, 0);
+    // Calculate total_expense, total_income, and total_revenue
+    const totalExpense = filteredData
+        .filter((item) => item.input_type === "expense")
+        .reduce((sum, item) => sum + item.amount, 0);
 
-  const totalIncome = filteredData
-    .filter((item) => item.input_type === "income")
-    .reduce((sum, item) => sum + item.amount, 0);
+    const totalIncome = filteredData
+        .filter((item) => item.input_type === "income")
+        .reduce((sum, item) => sum + item.amount, 0);
 
-  const totalRevenue = totalIncome - totalExpense;
+    const totalRevenue = totalIncome - totalExpense;
 
-  //console.log(totalRevenue)
-  //console.log(totalIncome)
-  //console.log(totalExpense)
+    //console.log(totalRevenue)
+    //console.log(totalIncome)
+    //console.log(totalExpense)
 
-  // Return an array of objects with calculated totals
-  return [
-    {
-      total_expense: totalExpense,
-      total_income: totalIncome,
-      total_revenue: totalRevenue,
-    },
-  ];
+    // Return an array of objects with calculated totals
+    return [
+        {
+            total_expense: totalExpense,
+            total_income: totalIncome,
+            total_revenue: totalRevenue,
+        },
+    ];
 };
 
+// Story 6
+function getExpensesByTag(data, tag) {
+    // Filter the data array to include only expenses with the specified tag
+    const expenses = data.filter(item => item.input_type === 'expense' && item.tag.toLowerCase() === tag.toLowerCase());
 
+    // Calculate the total amount for the matching expenses
+    const totalAmount = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+
+    return totalAmount;
+}
+
+function sortTagsByTotalExpense(data) {
+    // Create an object to store the total expenses for each tag
+    const tagTotalMap = {};
+
+    // Calculate total expenses for each tag
+    data.forEach(item => {
+        if (item.input_type === 'expense') {
+            const tag = item.tag;
+            tagTotalMap[tag] = (tagTotalMap[tag] || 0) + item.amount;
+        }
+    });
+
+    // Convert the object into an array of {tag, totalExpense} objects
+    const tagTotalArray = Object.keys(tagTotalMap).map(tag => ({ tag, totalExpense: tagTotalMap[tag] }));
+
+    // Sort the array by totalExpense in descending order
+    tagTotalArray.sort((a, b) => b.totalExpense - a.totalExpense);
+
+    return tagTotalArray;
+}
 
 
 
@@ -292,5 +340,7 @@ module.exports = {
     removeTag,
     makeGraph,
     setDarkMode,
-    summaryOfTag
+    summaryOfTag,
+    getExpensesByTag,
+    sortTagsByTotalExpense
 };

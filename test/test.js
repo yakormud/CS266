@@ -1,6 +1,6 @@
 const chai = require('chai');
 const expect = chai.expect;
-const { isValidDate, changeDate, submitDate, mockDatabaseData, addTag, removeTag, makeGraph, setDarkMode, summaryOfTag } = require('../src/addDate'); // Import your functions
+const { isValidDate, changeDate, submitDate, mockDatabaseData, addTag, removeTag, makeGraph, setDarkMode, summaryOfTag, getExpensesByTag, sortTagsByTotalExpense } = require('../src/addDate'); // Import your functions
 const fs = require('fs');
 const sinon = require('sinon');
 const { assert } = require('chai');
@@ -72,7 +72,7 @@ describe('[Sprint 1]: User Story 2', () => {
   it('should retrieve transactions sorted by date within the selected month', async () => {
     const result = await queryDatabaseForData();
     // Assuming result is an array of transactions
-    
+
     // You may want to compare the dates of transactions to ensure they are sorted
     const sortedDates = result.map(transaction => transaction.date);
     const isSorted = sortedDates.every((date, index, array) => index === 0 || date >= array[index - 1]);
@@ -207,30 +207,30 @@ describe('[Sprint 1]: User Story 4', () => {
 
 describe('[Sprint 2]: User Story 5', function () {
   it('should display chart when data is present', function (done) {
-      // Create a virtual DOM environment
-      const dom = new JSDOM('<!DOCTYPE html><div id="chart"></div>', { runScripts: 'dangerously' });
-      global.window = dom.window;
-      global.document = dom.window.document;
+    // Create a virtual DOM environment
+    const dom = new JSDOM('<!DOCTYPE html><div id="chart"></div>', { runScripts: 'dangerously' });
+    global.window = dom.window;
+    global.document = dom.window.document;
 
-      // Create a spy for makeGraph
-      const makeGraphSpy = sinon.spy(makeGraph);
+    // Create a spy for makeGraph
+    const makeGraphSpy = sinon.spy(makeGraph);
 
-      // Trigger the function you want to test (e.g., calling the function that contains your code)
-      makeGraphSpy([{ tag: 'Category 1', netBalance: 100 }]).then(() => {
-          // Assert that the chart is displayed
-          const chartContainer = document.getElementById('chart');
-          expect(chartContainer.style.display).to.equal('block');
+    // Trigger the function you want to test (e.g., calling the function that contains your code)
+    makeGraphSpy([{ tag: 'Category 1', netBalance: 100 }]).then(() => {
+      // Assert that the chart is displayed
+      const chartContainer = document.getElementById('chart');
+      expect(chartContainer.style.display).to.equal('block');
 
-          // Check if makeGraph was called
-          expect(makeGraphSpy.calledOnce).to.be.true;
+      // Check if makeGraph was called
+      expect(makeGraphSpy.calledOnce).to.be.true;
 
-          // Clean up the virtual DOM
-          global.window = undefined;
-          global.document = undefined;
+      // Clean up the virtual DOM
+      global.window = undefined;
+      global.document = undefined;
 
-          // Signal that the test is complete
-          done();
-      });
+      // Signal that the test is complete
+      done();
+    });
   });
 
   it('should not display chart when data is empty', function (done) {
@@ -243,7 +243,7 @@ describe('[Sprint 2]: User Story 5', function () {
     const makeGraphSpy = sinon.spy(makeGraph);
 
     // Trigger the function you want to test with empty data
-    makeGraphSpy([{ }]).then(() => {
+    makeGraphSpy([{}]).then(() => {
       // Assert that the chart is not displayed
       const chartContainer = document.getElementById('chart');
       expect(chartContainer.style.display).to.equal('none');
@@ -257,16 +257,16 @@ describe('[Sprint 2]: User Story 5', function () {
 
       // Signal that the test is complete
       done();
-  }).catch(error => {
+    }).catch(error => {
       // Handle errors
       console.error('Test failed:', error);
 
       // Clean up the virtual DOM
       global.window = undefined;
       global.document = undefined;
-  });
+    });
 
-  
+
   });
   it('should not display chart again when data were removed', function (done) {
     // Create a virtual DOM environment
@@ -279,48 +279,81 @@ describe('[Sprint 2]: User Story 5', function () {
 
     // Trigger the function you want to test (e.g., calling the function that contains your code)
     makeGraphSpy([{ tag: 'Category 1', netBalance: 100 }])
-        .then(() => {
-            // Assert that the chart is displayed
-            const chartContainer = document.getElementById('chart');
-            expect(chartContainer.style.display).to.equal('block');
+      .then(() => {
+        // Assert that the chart is displayed
+        const chartContainer = document.getElementById('chart');
+        expect(chartContainer.style.display).to.equal('block');
 
-            // Check if makeGraph was called
-            expect(makeGraphSpy.calledOnce).to.be.true;
+        // Check if makeGraph was called
+        expect(makeGraphSpy.calledOnce).to.be.true;
 
-            // Now, call makeGraph again with empty data
-            return makeGraphSpy([{}]);
-        })
-        .then(() => {
-            // Assert that the chart is not displayed
-            const chartContainer = document.getElementById('chart');
-            expect(chartContainer.style.display).to.equal('none');
+        // Now, call makeGraph again with empty data
+        return makeGraphSpy([{}]);
+      })
+      .then(() => {
+        // Assert that the chart is not displayed
+        const chartContainer = document.getElementById('chart');
+        expect(chartContainer.style.display).to.equal('none');
 
-            // Check if makeGraph was called again
-            expect(makeGraphSpy.calledTwice).to.be.true;
+        // Check if makeGraph was called again
+        expect(makeGraphSpy.calledTwice).to.be.true;
 
-            // Clean up the virtual DOM
-            global.window = undefined;
-            global.document = undefined;
+        // Clean up the virtual DOM
+        global.window = undefined;
+        global.document = undefined;
 
-            // Signal that the test is complete
-            done();
-        })
-        .catch(error => {
-            // Handle errors
-            console.error('Test failed:', error);
+        // Signal that the test is complete
+        done();
+      })
+      .catch(error => {
+        // Handle errors
+        console.error('Test failed:', error);
 
-            // Clean up the virtual DOM
-            global.window = undefined;
-            global.document = undefined;
+        // Clean up the virtual DOM
+        global.window = undefined;
+        global.document = undefined;
 
-            // Signal that the test is complete with failure
-            done(error);
-        });
-    });
+        // Signal that the test is complete with failure
+        done(error);
+      });
+  });
 });
 
+
+// Story 6
+
+describe('[Sprint 2]: User Story 6', () => {
+  it('should return total expenses for the specified tag', () => {
+    const tag = 'Food';
+    const result = getExpensesByTag(mockDatabaseData, tag);
+    expect(result).to.equal(150);
+  });
+
+  it('should return 0 for a tag with no expenses', () => {
+    const tag = 'Other';
+    const result = getExpensesByTag(mockDatabaseData, tag);
+    expect(result).to.equal(0);
+  });
+
+  it('should sort tags by total expense from highest to lowest', () => {
+    const sortedTags = sortTagsByTotalExpense(mockDatabaseData);
+
+    expect(sortedTags).to.be.an('array');
+    expect(sortedTags).to.have.lengthOf(2);
+
+    // Check if the sorting is correct
+    expect(sortedTags[0].tag).to.equal('Food');
+    expect(sortedTags[0].totalExpense).to.equal(150);
+
+    expect(sortedTags[1].tag).to.equal('Travel');
+    expect(sortedTags[1].totalExpense).to.equal(70);
+  });
+
+});
+
+
 describe('[Sprint 2]: User Story 7', () => {
-  let html = fs.readFileSync(path.join(__dirname, '..' ,'/src/home.html'), 'utf8');
+  let html = fs.readFileSync(path.join(__dirname, '..', '/src/home.html'), 'utf8');
   let dom = new JSDOM(html);
 
   it('should change mode to dark mode if it was light mode before', () => {
@@ -338,13 +371,13 @@ describe('[Sprint 2]: User Story 7', () => {
 
     // changing the page
 
-    html = fs.readFileSync(path.join(__dirname, '..' ,'/src/history.html'), 'utf8');
+    html = fs.readFileSync(path.join(__dirname, '..', '/src/history.html'), 'utf8');
     dom = new JSDOM(html);
     body = dom.window.document.querySelector('body');
     modeSwitch = dom.window.document.querySelector('.toggle-switch');
 
     expect(body.classList.contains('dark')).to.be.false;
-    });
+  });
 });
 
 
@@ -423,7 +456,7 @@ describe('[Sprint 2]: Error 1', () => {
     expect(data.total_income).to.equal(0);
     expect(data.total_revenue).to.equal(0); // (total_income - total_expense)
   });
-  
+
   it('in history page, choosing a tag that has data in the database will show accumulated money based on tag and type', () => {
 
     const tagWithData = "Food";
@@ -442,3 +475,4 @@ describe('[Sprint 2]: Error 1', () => {
 
 
 // console.log(mockDatabaseData);
+
