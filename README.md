@@ -116,4 +116,4 @@ In the development cycles, we plan to incorporate additional features and improv
 
 <img src="https://github.com/yakormud/CS266/assets/32937471/96787260-728f-46b3-a380-beb143db78e2" width="853" height="481">
 <img src="https://github.com/yakormud/CS266/assets/32937471/638ecef9-d800-49ee-855d-e62931d3477d" width="853" height="481">
-<img src="https://github.com/yakormud/CS266/assets/32937471/2cda5c56-8bc6-4ee9-83eb-64087aefde20" width="853" height="481">
+<img src="https://github.com/yakormud/CS266/assets/151375894/97a18b6e-2a7c-4af7-98a0-691ab18abdee" width="853" height="481">
