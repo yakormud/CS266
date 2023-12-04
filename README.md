@@ -105,6 +105,8 @@ In the development cycles, we plan to incorporate additional features and improv
 -   Implemented a feature to highlight tags with the highest expenses.
 -   Provided insights to help users manage their expenditures more efficiently.
 
+<img src="https://github.com/yakormud/CS266/assets/99605831/94ab93f6-f9d0-4354-878a-f0c670ccae78" width="853" height="420">
+
 ## Story 7: Toggle Between Light and Dark Mode
 
 **Functionality:** Users can switch between light and dark mode to customize the display according to their preferences.
