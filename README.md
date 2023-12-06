@@ -96,6 +96,8 @@ In the development cycles, we plan to incorporate additional features and improv
 -   Introduced charts summarizing income and expenses by tags.
 -   Enhanced the ability to analyze monthly financial data.
 
+<img src="https://github.com/yakormud/CS266/assets/99605831/90e637bc-9222-4f13-8659-f6d0914d7754" width="853" height="420">
+
 ## Story 6: Identify Highest Spending Tags
 
 **Functionality:** Users can identify which tags are associated with the highest spending, aiding in effective budget management.
